@@ -1,5 +1,7 @@
 # Welcome to your Lovable project
 
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/nikiminoj/climb-together-boost?utm_source=oss&utm_medium=github&utm_campaign=nikiminoj%2Fclimb-together-boost&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/ab74d3a5-93df-490b-ba3c-239dd4518d72
