@@ -26,8 +26,6 @@ supabase
   })
   .subscribe();
 
-
-
 /**
  * Retrieves all notifications from the database, ordered by most recent first.
  *
