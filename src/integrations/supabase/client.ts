@@ -28,6 +28,12 @@ supabase
 
 
 
+
+/**
+ * Retrieves all notifications from the database, ordered by most recent first.
+ *
+ * @returns An array of notification objects, or an empty array if an error occurs
+ */
 export async function getNotifications(userId: string) {
   const { data, error } = await supabase
     .from('notifications')
@@ -43,6 +49,12 @@ export async function getNotifications(userId: string) {
   return data;
 }
 
+/**
+ * Marks a notification as read by updating its status in the database.
+ *
+ * @param notificationId - The unique identifier of the notification to mark as read
+ * @returns True if the notification was successfully marked as read; otherwise, false
+ */
 export async function markNotificationAsRead(notificationId: string, userId: string) {
   const { data, error, count } = await supabase
     .from('notifications')
@@ -60,6 +72,12 @@ export async function markNotificationAsRead(notificationId: string, userId: str
   return data !== null && data.length > 0;
 }
 
+/**
+ * Deletes a notification from the database by its ID.
+ *
+ * @param notificationId - The unique identifier of the notification to delete
+ * @returns True if the notification was successfully deleted; otherwise, false
+ */
 export async function deleteNotification(notificationId: string) {
   const { error } = await supabase
     .from('notifications')
