@@ -15,3 +15,59 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     autoRefreshToken: true,
   }
 });
+
+// Real-time subscription for new notifications
+supabase
+  .channel('notifications')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, payload => {
+    console.log('New notification received:', payload.new);
+    // TODO: Integrate with useNotifications hook to update UI
+    // This could involve emitting an event or invalidating the query.
+  })
+  .subscribe();
+
+
+
+export async function getNotifications() {
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching notifications:', error);
+    return [];
+  }
+
+  return data;
+}
+
+export async function markNotificationAsRead(notificationId: string) {
+  const { data, error } = await supabase
+    .from('notifications')
+    .update({ read: true })
+    .eq('id', notificationId);
+
+  if (error) {
+    console.error(`Error marking notification ${notificationId} as read:`, error);
+    return false;
+  }
+
+  // Supabase update operations typically return the updated row(s) if successful.
+  // We can check if data is returned to confirm success.
+  return data !== null;
+}
+
+export async function deleteNotification(notificationId: string) {
+  const { error } = await supabase
+    .from('notifications')
+    .delete()
+    .eq('id', notificationId);
+
+  if (error) {
+    console.error(`Error deleting notification ${notificationId}:`, error);
+    return false;
+  }
+
+  return true;
+}
