@@ -2,13 +2,13 @@ import React from 'react';
 import { useNotifications } from '../hooks/useNotifications';
 
 const NotificationList: React.FC = () => {
-  const { data: notifications, isLoading, isError, markAsRead, removeNotification } = useNotifications();
+  const { data: notifications, isLoading, error, markAsRead, removeNotification } = useNotifications();
 
   if (isLoading) {
     return <div className="p-4">Loading notifications...</div>;
   }
 
-  if (isError) {
+  if (error) {
     return <div className="p-4 text-red-500">Error loading notifications.</div>;
   }
 
