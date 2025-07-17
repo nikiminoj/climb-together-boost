@@ -28,14 +28,16 @@ supabase
 
 
 
+
 /**
  * Retrieves all notifications from the database, ordered by most recent first.
  *
  * @returns An array of notification objects, or an empty array if an error occurs
  */
-export async function getNotifications() {
+export async function getNotifications(userId: string) {
   const { data, error } = await supabase
     .from('notifications')
+ .eq('user_id', userId)
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -53,20 +55,21 @@ export async function getNotifications() {
  * @param notificationId - The unique identifier of the notification to mark as read
  * @returns True if the notification was successfully marked as read; otherwise, false
  */
-export async function markNotificationAsRead(notificationId: string) {
-  const { data, error } = await supabase
+export async function markNotificationAsRead(notificationId: string, userId: string) {
+  const { data, error, count } = await supabase
     .from('notifications')
     .update({ read: true })
-    .eq('id', notificationId);
+    .eq('id', notificationId)
+    .eq('user_id', userId) // Add user validation
+    .select(); // Select to get data back and check for success
 
   if (error) {
     console.error(`Error marking notification ${notificationId} as read:`, error);
     return false;
   }
-
-  // Supabase update operations typically return the updated row(s) if successful.
-  // We can check if data is returned to confirm success.
-  return data !== null;
+  
+  // Check if any rows were updated. Supabase update returns an array of updated rows or an empty array if none were updated.
+  return data !== null && data.length > 0;
 }
 
 /**

@@ -1,15 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getNotifications, markNotificationAsRead, deleteNotification, supabase } from '../integrations/supabase/client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const useNotifications = () => {
   const queryClient = useQueryClient();
-  const session = supabase.auth.getSession();
-  const userId = session?.data?.session?.user?.id;
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUserId(data.session?.user?.id || null);
+    };
+    fetchSession();
+  }, []);
 
   const { data: notifications, isLoading, error } = useQuery({
-    queryKey: ['notifications', userId],
-    queryFn: () => getNotifications(),
     enabled: !!userId, // Only fetch if userId exists (user is logged in)
   });
 
