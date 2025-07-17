@@ -85,6 +85,12 @@ export async function getAllBadges() {
  return data;
 }
 
+/**
+ * Retrieves all badges earned by a specific user, including badge details.
+ *
+ * @param userId - The unique identifier of the user whose badges are being fetched
+ * @returns An array of user badge records with associated badge information, or an empty array if an error occurs
+ */
 export async function getUserBadges(userId: string) {
   const { data, error } = await supabase
     .from('user_badges')
@@ -102,6 +108,12 @@ export async function getUserBadges(userId: string) {
  return data;
 }
 
+/**
+ * Registers an upvote for a product by invoking the 'handle_upvote' remote procedure.
+ *
+ * @param productId - The unique identifier of the product to upvote
+ * @returns `true` if the upvote was successfully registered; otherwise, `false`
+ */
 export async function upvoteProduct(productId: string) {
   const { data, error } = await supabase.rpc('handle_upvote', { p_product_id: productId });
 
