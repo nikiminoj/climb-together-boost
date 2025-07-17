@@ -1,13 +1,18 @@
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { X, Upload, Link, Tag } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { X, Upload, Link, Tag } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface SubmitProductFormProps {
   onClose: () => void;
@@ -15,40 +20,29 @@ interface SubmitProductFormProps {
 
 export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    link: "",
-    category: "",
-    image: "",
-    tags: ""
+    name: '',
+    description: '',
+    link: '',
+    category: '',
+    image: '',
+    tags: '',
   });
 
-  const categories = [
-    "Productivity",
-    "Design",
-    "Developer Tools",
-    "Marketing",
-    "Analytics",
-    "Social Media",
-    "E-commerce",
-    "Education",
-    "Health & Fitness",
-    "Finance",
-    "Entertainment",
-    "Other"
-  ];
+  // TODO: Fetch product categories from the database
+  // const categories = [...];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Product submitted!",
-      description: "Your product has been submitted for review and will appear in the directory soon.",
+      title: 'Product submitted!',
+      description:
+        'Your product has been submitted for review and will appear in the directory soon.',
     });
     onClose();
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -60,7 +54,7 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
-        
+
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
@@ -69,7 +63,7 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
                 id="name"
                 placeholder="Enter your product name"
                 value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
+                onChange={(e) => handleInputChange('name', e.target.value)}
                 required
               />
             </div>
@@ -80,7 +74,9 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
                 id="description"
                 placeholder="Describe what your product does and what makes it special"
                 value={formData.description}
-                onChange={(e) => handleInputChange("description", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange('description', e.target.value)
+                }
                 rows={4}
                 required
               />
@@ -96,23 +92,28 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
                 type="url"
                 placeholder="https://yourproduct.com"
                 value={formData.link}
-                onChange={(e) => handleInputChange("link", e.target.value)}
+                onChange={(e) => handleInputChange('link', e.target.value)}
                 required
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="category">Category *</Label>
-              <Select onValueChange={(value) => handleInputChange("category", value)}>
+              <Select
+                onValueChange={(value) => handleInputChange('category', value)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
+                  {categories.map(
+                    (category) =>
+                      // TODO: Map over fetched categories and render SelectItem components
+                      // <SelectItem key={category.id} value={category.name}>
+                      //   {category.name}
+                      // </SelectItem>
+                      null, // Placeholder until categories are fetched
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -127,7 +128,7 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
                 type="url"
                 placeholder="https://example.com/image.jpg"
                 value={formData.image}
-                onChange={(e) => handleInputChange("image", e.target.value)}
+                onChange={(e) => handleInputChange('image', e.target.value)}
               />
               <p className="text-xs text-gray-600">
                 Recommended: 400x300px or similar aspect ratio
@@ -143,22 +144,35 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
                 id="tags"
                 placeholder="saas, productivity, ai, startup (comma separated)"
                 value={formData.tags}
-                onChange={(e) => handleInputChange("tags", e.target.value)}
+                onChange={(e) => handleInputChange('tags', e.target.value)}
               />
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="font-semibold text-blue-900 mb-2">💡 Pro Tips:</h4>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Use a compelling description that highlights your unique value proposition</li>
-                <li>• Add a high-quality screenshot or logo as your product image</li>
-                <li>• Choose the most relevant category to help users discover your product</li>
-                <li>• Include a working demo or trial link to maximize engagement</li>
+                <li>
+                  • Use a compelling description that highlights your unique
+                  value proposition
+                </li>
+                <li>
+                  • Add a high-quality screenshot or logo as your product image
+                </li>
+                <li>
+                  • Choose the most relevant category to help users discover
+                  your product
+                </li>
+                <li>
+                  • Include a working demo or trial link to maximize engagement
+                </li>
               </ul>
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button type="submit" className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600">
+              <Button
+                type="submit"
+                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600"
+              >
                 Submit Product
               </Button>
               <Button type="button" variant="outline" onClick={onClose}>

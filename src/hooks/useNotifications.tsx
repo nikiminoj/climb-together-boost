@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getNotifications, markNotificationAsRead, deleteNotification, supabase } from '../integrations/supabase/client';
+import {
+  getNotifications,
+  markNotificationAsRead,
+  deleteNotification,
+  supabase,
+} from '../integrations/supabase/client';
 import { useEffect } from 'react';
 
 export const useNotifications = () => {
@@ -7,14 +12,19 @@ export const useNotifications = () => {
   const session = supabase.auth.getSession();
   const userId = session?.data?.session?.user?.id;
 
-  const { data: notifications, isLoading, error } = useQuery({
+  const {
+    data: notifications,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['notifications', userId],
     queryFn: () => getNotifications(),
     enabled: !!userId, // Only fetch if userId exists (user is logged in)
   });
 
   const markAsReadMutation = useMutation({
-    mutationFn: (notificationId: string) => markNotificationAsRead(notificationId),
+    mutationFn: (notificationId: string) =>
+      markNotificationAsRead(notificationId),
     onSuccess: () => {
       queryClient.invalidateQueries(['notifications', userId]);
     },
@@ -47,7 +57,7 @@ export const useNotifications = () => {
         (payload) => {
           console.log('New notification received:', payload);
           queryClient.invalidateQueries(['notifications', userId]);
-        }
+        },
       )
       .subscribe();
 
@@ -55,7 +65,6 @@ export const useNotifications = () => {
       supabase.removeChannel(channel);
     };
   }, [userId, queryClient]);
-
 
   return {
     notifications,

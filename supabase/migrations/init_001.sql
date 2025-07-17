@@ -50,7 +50,27 @@ ALTER TABLE user_badges ENABLE RLS;
 -- Policy to allow authenticated users to view their own user_badges
 CREATE POLICY select_user_badges ON user_badges FOR SELECT TO authenticated USING (user_id = auth.uid());
 
+-- Create the tags table
+CREATE TABLE tags (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  color TEXT NOT NULL
+);
+
+-- Enable Row Level Security (RLS) for tags
+ALTER TABLE tags ENABLE RLS;
 -- Assuming 'products' table already exists, alter it to add ranking columns
+
+-- Create the product_tags join table
+CREATE TABLE product_tags (
+  product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+  tag_id UUID REFERENCES tags(id) ON DELETE CASCADE,
+  PRIMARY KEY (product_id, tag_id)
+);
+
+-- Enable Row Level Security (RLS) for product_tags
+ALTER TABLE product_tags ENABLE RLS;
+
 -- Create the products table
 CREATE TABLE products (
  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

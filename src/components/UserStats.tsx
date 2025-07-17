@@ -1,8 +1,14 @@
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Trophy, Target, Share2, Heart, MessageCircle, Eye } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Badge } from '@/components/ui/badge';
+import {
+  Trophy,
+  Target,
+  Share2,
+  Heart,
+  MessageCircle,
+  Eye,
+} from 'lucide-react';
 
 interface UserStatsProps {
   user: {
@@ -21,9 +27,9 @@ interface UserStatsProps {
 export const UserStats = ({ user }: UserStatsProps) => {
   const getProgressColor = (used: number, max: number) => {
     const percentage = (used / max) * 100;
-    if (percentage >= 90) return "bg-red-500";
-    if (percentage >= 70) return "bg-yellow-500";
-    return "bg-green-500";
+    if (percentage >= 90) return 'bg-red-500';
+    if (percentage >= 70) return 'bg-yellow-500';
+    return 'bg-green-500';
   };
 
   return (
@@ -38,7 +44,9 @@ export const UserStats = ({ user }: UserStatsProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center">
-            <div className="text-3xl font-bold text-purple-600">{user.points}</div>
+            <div className="text-3xl font-bold text-purple-600">
+              {user.points}
+            </div>
             <div className="text-sm text-gray-600">Total Points</div>
             <Badge variant="secondary" className="mt-2">
               Rank #{user.rank}
@@ -67,8 +75,12 @@ export const UserStats = ({ user }: UserStatsProps) => {
                   {user.dailyLimits.sharing.used}/{user.dailyLimits.sharing.max}
                 </span>
               </div>
-              <Progress 
-                value={(user.dailyLimits.sharing.used / user.dailyLimits.sharing.max) * 100}
+              <Progress
+                value={
+                  (user.dailyLimits.sharing.used /
+                    user.dailyLimits.sharing.max) *
+                  100
+                }
               />
             </div>
 
@@ -79,11 +91,16 @@ export const UserStats = ({ user }: UserStatsProps) => {
                   Upvoting
                 </div>
                 <span className="text-xs text-gray-600">
-                  {user.dailyLimits.upvoting.used}/{user.dailyLimits.upvoting.max}
+                  {user.dailyLimits.upvoting.used}/
+                  {user.dailyLimits.upvoting.max}
                 </span>
               </div>
-              <Progress 
-                value={(user.dailyLimits.upvoting.used / user.dailyLimits.upvoting.max) * 100}
+              <Progress
+                value={
+                  (user.dailyLimits.upvoting.used /
+                    user.dailyLimits.upvoting.max) *
+                  100
+                }
               />
             </div>
 
@@ -94,11 +111,16 @@ export const UserStats = ({ user }: UserStatsProps) => {
                   Commenting
                 </div>
                 <span className="text-xs text-gray-600">
-                  {user.dailyLimits.commenting.used}/{user.dailyLimits.commenting.max}
+                  {user.dailyLimits.commenting.used}/
+                  {user.dailyLimits.commenting.max}
                 </span>
               </div>
-              <Progress 
-                value={(user.dailyLimits.commenting.used / user.dailyLimits.commenting.max) * 100}
+              <Progress
+                value={
+                  (user.dailyLimits.commenting.used /
+                    user.dailyLimits.commenting.max) *
+                  100
+                }
               />
             </div>
 
@@ -109,11 +131,16 @@ export const UserStats = ({ user }: UserStatsProps) => {
                   Following
                 </div>
                 <span className="text-xs text-gray-600">
-                  {user.dailyLimits.following.used}/{user.dailyLimits.following.max}
+                  {user.dailyLimits.following.used}/
+                  {user.dailyLimits.following.max}
                 </span>
               </div>
-              <Progress 
-                value={(user.dailyLimits.following.used / user.dailyLimits.following.max) * 100}
+              <Progress
+                value={
+                  (user.dailyLimits.following.used /
+                    user.dailyLimits.following.max) *
+                  100
+                }
               />
             </div>
           </div>

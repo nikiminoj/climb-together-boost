@@ -2,31 +2,38 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://mcbuxkyofjngibhxvxvk.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jYnV4a3lvZmpuZ2liaHh2eHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3Mzk1OTcsImV4cCI6MjA2ODMxNTU5N30.tf85GEz3hzdQ9fdGht4ocryRayGV67mu5xh_iJe9uv4";
+const SUPABASE_URL = 'https://mcbuxkyofjngibhxvxvk.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jYnV4a3lvZmpuZ2liaHh2eHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3Mzk1OTcsImV4cCI6MjA2ODMxNTU5N30.tf85GEz3hzdQ9fdGht4ocryRayGV67mu5xh_iJe9uv4';
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
-  }
-});
+export const supabase = createClient<Database>(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      storage: localStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  },
+);
 
 // Real-time subscription for new notifications
 supabase
   .channel('notifications')
-  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, payload => {
-    console.log('New notification received:', payload.new);
-    // TODO: Integrate with useNotifications hook to update UI
-    // This could involve emitting an event or invalidating the query.
-  })
+  .on(
+    'postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'notifications' },
+    (payload) => {
+      console.log('New notification received:', payload.new);
+      // TODO: Integrate with useNotifications hook to update UI
+      // This could involve emitting an event or invalidating the query.
+    },
+  )
   .subscribe();
-
-
 
 export async function getNotifications() {
   const { data, error } = await supabase
@@ -49,7 +56,10 @@ export async function markNotificationAsRead(notificationId: string) {
     .eq('id', notificationId);
 
   if (error) {
-    console.error(`Error marking notification ${notificationId} as read:`, error);
+    console.error(
+      `Error marking notification ${notificationId} as read:`,
+      error,
+    );
     return false;
   }
 
@@ -73,16 +83,14 @@ export async function deleteNotification(notificationId: string) {
 }
 
 export async function getAllBadges() {
-  const { data, error } = await supabase
-    .from('badges')
-    .select('*');
+  const { data, error } = await supabase.from('badges').select('*');
 
- if (error) {
- console.error('Error fetching all badges:', error);
- return [];
- }
+  if (error) {
+    console.error('Error fetching all badges:', error);
+    return [];
+  }
 
- return data;
+  return data;
 }
 
 /**
@@ -94,18 +102,20 @@ export async function getAllBadges() {
 export async function getUserBadges(userId: string) {
   const { data, error } = await supabase
     .from('user_badges')
- .select(`
+    .select(
+      `
  id,
  earned_at,
  badges (id, name, description, icon)
- `)
- .eq('user_id', userId);
+ `,
+    )
+    .eq('user_id', userId);
 
- if (error) {
- console.error(`Error fetching badges for user ${userId}:`, error);
- return [];
- }
- return data;
+  if (error) {
+    console.error(`Error fetching badges for user ${userId}:`, error);
+    return [];
+  }
+  return data;
 }
 
 /**
@@ -115,7 +125,9 @@ export async function getUserBadges(userId: string) {
  * @returns `true` if the upvote was successfully registered; otherwise, `false`
  */
 export async function upvoteProduct(productId: string) {
-  const { data, error } = await supabase.rpc('handle_upvote', { p_product_id: productId });
+  const { data, error } = await supabase.rpc('handle_upvote', {
+    p_product_id: productId,
+  });
 
   if (error) {
     console.error(`Error upvoting product ${productId}:`, error);

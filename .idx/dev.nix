@@ -8,6 +8,7 @@
     # pkgs.go
     # pkgs.python311
     pkgs.supabase-cli
+    pkgs.xdg-utils
     # pkgs.python311Packages.pip
     pkgs.nodejs_22
     # pkgs.nodePackages.nodemon
