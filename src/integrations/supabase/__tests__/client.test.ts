@@ -1,18 +1,25 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import {
+  describe,
+  it,
+  expect,
+  jest,
+  beforeEach,
+  afterEach,
+} from '@jest/globals';
 import { createClient } from '@supabase/supabase-js';
-import { 
-  supabase, 
-  getNotifications, 
-  markNotificationAsRead, 
-  deleteNotification, 
-  getAllBadges, 
-  getUserBadges, 
-  upvoteProduct 
+import {
+  supabase,
+  getNotifications,
+  markNotificationAsRead,
+  deleteNotification,
+  getAllBadges,
+  getUserBadges,
+  upvoteProduct,
 } from '../client';
 
 // Mock the supabase client
 jest.mock('@supabase/supabase-js', () => ({
-  createClient: jest.fn()
+  createClient: jest.fn(),
 }));
 
 // Mock localStorage for browser environment
@@ -22,12 +29,12 @@ const mockLocalStorage = {
   removeItem: jest.fn(),
   clear: jest.fn(),
   length: 0,
-  key: jest.fn()
+  key: jest.fn(),
 };
 
 Object.defineProperty(global, 'localStorage', {
   value: mockLocalStorage,
-  writable: true
+  writable: true,
 });
 
 describe('Supabase Client', () => {
@@ -41,7 +48,7 @@ describe('Supabase Client', () => {
   beforeEach(() => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Mock console methods to avoid cluttering test output
     jest.spyOn(console, 'error').mockImplementation(() => {});
     jest.spyOn(console, 'log').mockImplementation(() => {});
@@ -56,7 +63,7 @@ describe('Supabase Client', () => {
     mockSupabaseClient = {
       from: mockFrom,
       rpc: mockRpc,
-      channel: mockChannel
+      channel: mockChannel,
     };
 
     (createClient as any).mockReturnValue(mockSupabaseClient);
@@ -76,8 +83,8 @@ describe('Supabase Client', () => {
             storage: localStorage,
             persistSession: true,
             autoRefreshToken: true,
-          }
-        }
+          },
+        },
       );
     });
 
@@ -93,7 +100,7 @@ describe('Supabase Client', () => {
       expect(mockOn).toHaveBeenCalledWith(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'notifications' },
-        expect.any(Function)
+        expect.any(Function),
       );
       expect(mockSubscribe).toHaveBeenCalled();
     });
@@ -129,8 +136,18 @@ describe('Supabase Client', () => {
 
     it('should fetch notifications successfully', async () => {
       const mockData = [
-        { id: '1', message: 'Test notification', created_at: '2023-01-01T12:00:00Z', read: false },
-        { id: '2', message: 'Another notification', created_at: '2023-01-02T12:00:00Z', read: true }
+        {
+          id: '1',
+          message: 'Test notification',
+          created_at: '2023-01-01T12:00:00Z',
+          read: false,
+        },
+        {
+          id: '2',
+          message: 'Another notification',
+          created_at: '2023-01-02T12:00:00Z',
+          read: true,
+        },
       ];
 
       mockOrder.mockResolvedValue({ data: mockData, error: null });
@@ -139,7 +156,9 @@ describe('Supabase Client', () => {
 
       expect(mockFrom).toHaveBeenCalledWith('notifications');
       expect(mockSelect).toHaveBeenCalledWith('*');
-      expect(mockOrder).toHaveBeenCalledWith('created_at', { ascending: false });
+      expect(mockOrder).toHaveBeenCalledWith('created_at', {
+        ascending: false,
+      });
       expect(result).toEqual(mockData);
     });
 
@@ -149,7 +168,10 @@ describe('Supabase Client', () => {
 
       const result = await getNotifications();
 
-      expect(console.error).toHaveBeenCalledWith('Error fetching notifications:', mockError);
+      expect(console.error).toHaveBeenCalledWith(
+        'Error fetching notifications:',
+        mockError,
+      );
       expect(result).toEqual([]);
     });
 
@@ -173,7 +195,9 @@ describe('Supabase Client', () => {
       const networkError = new Error('Network request failed');
       mockOrder.mockRejectedValue(networkError);
 
-      await expect(getNotifications()).rejects.toThrow('Network request failed');
+      await expect(getNotifications()).rejects.toThrow(
+        'Network request failed',
+      );
     });
 
     it('should handle authentication errors', async () => {
@@ -182,7 +206,10 @@ describe('Supabase Client', () => {
 
       const result = await getNotifications();
 
-      expect(console.error).toHaveBeenCalledWith('Error fetching notifications:', authError);
+      expect(console.error).toHaveBeenCalledWith(
+        'Error fetching notifications:',
+        authError,
+      );
       expect(result).toEqual([]);
     });
 
@@ -191,7 +218,7 @@ describe('Supabase Client', () => {
         { id: '1' }, // Missing required fields
         { message: 'Test' }, // Missing ID
         null, // Null entry
-        { id: '2', message: 'Valid', created_at: '2023-01-01T12:00:00Z' }
+        { id: '2', message: 'Valid', created_at: '2023-01-01T12:00:00Z' },
       ];
 
       mockOrder.mockResolvedValue({ data: malformedData, error: null });
@@ -236,7 +263,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error marking notification ${notificationId} as read:`,
-        mockError
+        mockError,
       );
       expect(result).toBe(false);
     });
@@ -283,7 +310,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error marking notification ${notificationId} as read:`,
-        rlsError
+        rlsError,
       );
       expect(result).toBe(false);
     });
@@ -297,7 +324,7 @@ describe('Supabase Client', () => {
       const promises = [
         markNotificationAsRead(notificationId),
         markNotificationAsRead(notificationId),
-        markNotificationAsRead(notificationId)
+        markNotificationAsRead(notificationId),
       ];
 
       const results = await Promise.all(promises);
@@ -349,7 +376,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error deleting notification ${notificationId}:`,
-        mockError
+        mockError,
       );
       expect(result).toBe(false);
     });
@@ -385,7 +412,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error deleting notification ${notificationId}:`,
-        fkError
+        fkError,
       );
       expect(result).toBe(false);
     });
@@ -420,7 +447,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error deleting notification ${notificationId}:`,
-        transactionError
+        transactionError,
       );
       expect(result).toBe(false);
     });
@@ -436,8 +463,18 @@ describe('Supabase Client', () => {
 
     it('should fetch all badges successfully', async () => {
       const mockData = [
-        { id: '1', name: 'First Badge', description: 'Your first badge', icon: 'badge1.png' },
-        { id: '2', name: 'Second Badge', description: 'Your second badge', icon: 'badge2.png' }
+        {
+          id: '1',
+          name: 'First Badge',
+          description: 'Your first badge',
+          icon: 'badge1.png',
+        },
+        {
+          id: '2',
+          name: 'Second Badge',
+          description: 'Your second badge',
+          icon: 'badge2.png',
+        },
       ];
 
       mockSelect.mockResolvedValue({ data: mockData, error: null });
@@ -455,7 +492,10 @@ describe('Supabase Client', () => {
 
       const result = await getAllBadges();
 
-      expect(console.error).toHaveBeenCalledWith('Error fetching all badges:', mockError);
+      expect(console.error).toHaveBeenCalledWith(
+        'Error fetching all badges:',
+        mockError,
+      );
       expect(result).toEqual([]);
     });
 
@@ -478,7 +518,12 @@ describe('Supabase Client', () => {
     it('should handle badges with missing optional fields', async () => {
       const mockData = [
         { id: '1', name: 'First Badge' }, // Missing description and icon
-        { id: '2', name: 'Second Badge', description: 'Your second badge', icon: 'badge2.png' }
+        {
+          id: '2',
+          name: 'Second Badge',
+          description: 'Your second badge',
+          icon: 'badge2.png',
+        },
       ];
 
       mockSelect.mockResolvedValue({ data: mockData, error: null });
@@ -493,7 +538,7 @@ describe('Supabase Client', () => {
         id: `${i + 1}`,
         name: `Badge ${i + 1}`,
         description: `Description for badge ${i + 1}`,
-        icon: `badge${i + 1}.png`
+        icon: `badge${i + 1}.png`,
       }));
 
       mockSelect.mockResolvedValue({ data: mockData, error: null });
@@ -513,8 +558,18 @@ describe('Supabase Client', () => {
 
     it('should handle badges with duplicate IDs', async () => {
       const mockData = [
-        { id: '1', name: 'First Badge', description: 'Your first badge', icon: 'badge1.png' },
-        { id: '1', name: 'Duplicate Badge', description: 'Duplicate badge', icon: 'badge1-dup.png' }
+        {
+          id: '1',
+          name: 'First Badge',
+          description: 'Your first badge',
+          icon: 'badge1.png',
+        },
+        {
+          id: '1',
+          name: 'Duplicate Badge',
+          description: 'Duplicate badge',
+          icon: 'badge1-dup.png',
+        },
       ];
 
       mockSelect.mockResolvedValue({ data: mockData, error: null });
@@ -541,13 +596,23 @@ describe('Supabase Client', () => {
         {
           id: '1',
           earned_at: '2023-01-01T12:00:00Z',
-          badges: { id: '1', name: 'First Badge', description: 'Your first badge', icon: 'badge1.png' }
+          badges: {
+            id: '1',
+            name: 'First Badge',
+            description: 'Your first badge',
+            icon: 'badge1.png',
+          },
         },
         {
           id: '2',
           earned_at: '2023-01-02T12:00:00Z',
-          badges: { id: '2', name: 'Second Badge', description: 'Your second badge', icon: 'badge2.png' }
-        }
+          badges: {
+            id: '2',
+            name: 'Second Badge',
+            description: 'Your second badge',
+            icon: 'badge2.png',
+          },
+        },
       ];
 
       mockEq.mockResolvedValue({ data: mockData, error: null });
@@ -574,7 +639,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error fetching badges for user ${userId}:`,
-        mockError
+        mockError,
       );
       expect(result).toEqual([]);
     });
@@ -614,8 +679,13 @@ describe('Supabase Client', () => {
         {
           id: '1',
           earned_at: '2023-01-01T12:00:00Z',
-          badges: { id: '1', name: 'First Badge', description: 'Your first badge', icon: 'badge1.png' }
-        }
+          badges: {
+            id: '1',
+            name: 'First Badge',
+            description: 'Your first badge',
+            icon: 'badge1.png',
+          },
+        },
       ];
 
       mockEq.mockResolvedValue({ data: mockData, error: null });
@@ -632,8 +702,8 @@ describe('Supabase Client', () => {
         {
           id: '1',
           earned_at: '2023-01-01T12:00:00Z',
-          badges: null
-        }
+          badges: null,
+        },
       ];
 
       mockEq.mockResolvedValue({ data: mockData, error: null });
@@ -649,8 +719,13 @@ describe('Supabase Client', () => {
         {
           id: '1',
           earned_at: 'invalid-timestamp',
-          badges: { id: '1', name: 'First Badge', description: 'Your first badge', icon: 'badge1.png' }
-        }
+          badges: {
+            id: '1',
+            name: 'First Badge',
+            description: 'Your first badge',
+            icon: 'badge1.png',
+          },
+        },
       ];
 
       mockEq.mockResolvedValue({ data: mockData, error: null });
@@ -685,7 +760,9 @@ describe('Supabase Client', () => {
 
       const result = await upvoteProduct(productId);
 
-      expect(mockRpc).toHaveBeenCalledWith('handle_upvote', { p_product_id: productId });
+      expect(mockRpc).toHaveBeenCalledWith('handle_upvote', {
+        p_product_id: productId,
+      });
       expect(result).toBe(true);
     });
 
@@ -699,7 +776,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error upvoting product ${productId}:`,
-        mockError
+        mockError,
       );
       expect(result).toBe(false);
     });
@@ -734,7 +811,9 @@ describe('Supabase Client', () => {
 
       const result = await upvoteProduct(productId);
 
-      expect(mockRpc).toHaveBeenCalledWith('handle_upvote', { p_product_id: productId });
+      expect(mockRpc).toHaveBeenCalledWith('handle_upvote', {
+        p_product_id: productId,
+      });
       expect(result).toBe(true);
     });
 
@@ -758,7 +837,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error upvoting product ${productId}:`,
-        timeoutError
+        timeoutError,
       );
       expect(result).toBe(false);
     });
@@ -773,7 +852,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error upvoting product ${productId}:`,
-        authError
+        authError,
       );
       expect(result).toBe(false);
     });
@@ -788,7 +867,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error upvoting product ${productId}:`,
-        duplicateError
+        duplicateError,
       );
       expect(result).toBe(false);
     });
@@ -803,7 +882,7 @@ describe('Supabase Client', () => {
 
       expect(console.error).toHaveBeenCalledWith(
         `Error upvoting product ${productId}:`,
-        notFoundError
+        notFoundError,
       );
       expect(result).toBe(false);
     });
@@ -812,14 +891,21 @@ describe('Supabase Client', () => {
   describe('Real-time Subscription', () => {
     it('should handle new notification payload correctly', () => {
       const callbackFunction = mockOn.mock.calls[0][2];
-      
+
       const mockPayload = {
-        new: { id: '123', message: 'New notification', created_at: '2023-01-01T12:00:00Z' }
+        new: {
+          id: '123',
+          message: 'New notification',
+          created_at: '2023-01-01T12:00:00Z',
+        },
       };
 
       callbackFunction(mockPayload);
 
-      expect(console.log).toHaveBeenCalledWith('New notification received:', mockPayload.new);
+      expect(console.log).toHaveBeenCalledWith(
+        'New notification received:',
+        mockPayload.new,
+      );
     });
 
     it('should set up subscription correctly', () => {
@@ -827,60 +913,80 @@ describe('Supabase Client', () => {
       expect(mockOn).toHaveBeenCalledWith(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'notifications' },
-        expect.any(Function)
+        expect.any(Function),
       );
       expect(mockSubscribe).toHaveBeenCalled();
     });
 
     it('should handle payload with null new data', () => {
       const callbackFunction = mockOn.mock.calls[0][2];
-      
+
       const mockPayload = { new: null };
 
       callbackFunction(mockPayload);
 
-      expect(console.log).toHaveBeenCalledWith('New notification received:', null);
+      expect(console.log).toHaveBeenCalledWith(
+        'New notification received:',
+        null,
+      );
     });
 
     it('should handle payload with empty new data', () => {
       const callbackFunction = mockOn.mock.calls[0][2];
-      
+
       const mockPayload = { new: {} };
 
       callbackFunction(mockPayload);
 
-      expect(console.log).toHaveBeenCalledWith('New notification received:', {});
+      expect(console.log).toHaveBeenCalledWith(
+        'New notification received:',
+        {},
+      );
     });
 
     it('should handle malformed payload gracefully', () => {
       const callbackFunction = mockOn.mock.calls[0][2];
-      
+
       const mockPayload = { invalid: 'data' };
 
       callbackFunction(mockPayload);
 
-      expect(console.log).toHaveBeenCalledWith('New notification received:', undefined);
+      expect(console.log).toHaveBeenCalledWith(
+        'New notification received:',
+        undefined,
+      );
     });
 
     it('should handle payload with additional metadata', () => {
       const callbackFunction = mockOn.mock.calls[0][2];
-      
+
       const mockPayload = {
-        new: { id: '123', message: 'New notification', created_at: '2023-01-01T12:00:00Z' },
+        new: {
+          id: '123',
+          message: 'New notification',
+          created_at: '2023-01-01T12:00:00Z',
+        },
         old: null,
-        eventType: 'INSERT'
+        eventType: 'INSERT',
       };
 
       callbackFunction(mockPayload);
 
-      expect(console.log).toHaveBeenCalledWith('New notification received:', mockPayload.new);
+      expect(console.log).toHaveBeenCalledWith(
+        'New notification received:',
+        mockPayload.new,
+      );
     });
 
     it('should handle subscription connection errors', () => {
       // Test that subscription setup doesn't throw errors
       expect(() => {
         mockChannel('notifications');
-        mockOn('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, () => {});
+        mockOn(
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'notifications' },
+          () => {},
+        );
         mockSubscribe();
       }).not.toThrow();
     });
@@ -923,7 +1029,7 @@ describe('Supabase Client', () => {
       const results = await Promise.all(promises);
 
       expect(results).toHaveLength(10);
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result).toEqual(mockData);
       });
     });
@@ -936,7 +1042,7 @@ describe('Supabase Client', () => {
       const largeDataset = Array.from({ length: 5000 }, (_, i) => ({
         id: `${i + 1}`,
         message: `Notification ${i + 1}`,
-        created_at: '2023-01-01T12:00:00Z'
+        created_at: '2023-01-01T12:00:00Z',
       }));
 
       mockOrder.mockResolvedValue({ data: largeDataset, error: null });
@@ -947,7 +1053,7 @@ describe('Supabase Client', () => {
       expect(result[0]).toEqual({
         id: '1',
         message: 'Notification 1',
-        created_at: '2023-01-01T12:00:00Z'
+        created_at: '2023-01-01T12:00:00Z',
       });
     });
 
@@ -961,7 +1067,10 @@ describe('Supabase Client', () => {
 
       const result = await getNotifications();
 
-      expect(console.error).toHaveBeenCalledWith('Error fetching notifications:', connectionError);
+      expect(console.error).toHaveBeenCalledWith(
+        'Error fetching notifications:',
+        connectionError,
+      );
       expect(result).toEqual([]);
     });
 
@@ -975,7 +1084,10 @@ describe('Supabase Client', () => {
 
       const result = await getNotifications();
 
-      expect(console.error).toHaveBeenCalledWith('Error fetching notifications:', rateLimitError);
+      expect(console.error).toHaveBeenCalledWith(
+        'Error fetching notifications:',
+        rateLimitError,
+      );
       expect(result).toEqual([]);
     });
 
@@ -1002,7 +1114,10 @@ describe('Supabase Client', () => {
 
       const result = await getNotifications();
 
-      expect(console.error).toHaveBeenCalledWith('Error fetching notifications:', versionError);
+      expect(console.error).toHaveBeenCalledWith(
+        'Error fetching notifications:',
+        versionError,
+      );
       expect(result).toEqual([]);
     });
   });
@@ -1014,19 +1129,24 @@ describe('Supabase Client', () => {
       const mockUpdate = jest.fn();
       const mockDelete = jest.fn();
       const mockEq = jest.fn();
-      
+
       mockFrom.mockImplementation((table: string) => {
         if (table === 'notifications') {
           return {
             select: mockSelect,
             update: mockUpdate.mockReturnValue({ eq: mockEq }),
-            delete: mockDelete.mockReturnValue({ eq: mockEq })
+            delete: mockDelete.mockReturnValue({ eq: mockEq }),
           };
         }
       });
 
       const notifications = [
-        { id: '1', message: 'Test notification', created_at: '2023-01-01T12:00:00Z', read: false }
+        {
+          id: '1',
+          message: 'Test notification',
+          created_at: '2023-01-01T12:00:00Z',
+          read: false,
+        },
       ];
 
       // Test fetch
@@ -1048,7 +1168,7 @@ describe('Supabase Client', () => {
     it('should handle complete badge workflow', async () => {
       const mockSelect = jest.fn();
       const mockEq = jest.fn();
-      
+
       mockFrom.mockImplementation((table: string) => {
         if (table === 'badges') {
           return { select: mockSelect };
@@ -1059,16 +1179,31 @@ describe('Supabase Client', () => {
       });
 
       const allBadges = [
-        { id: '1', name: 'First Badge', description: 'Your first badge', icon: 'badge1.png' },
-        { id: '2', name: 'Second Badge', description: 'Your second badge', icon: 'badge2.png' }
+        {
+          id: '1',
+          name: 'First Badge',
+          description: 'Your first badge',
+          icon: 'badge1.png',
+        },
+        {
+          id: '2',
+          name: 'Second Badge',
+          description: 'Your second badge',
+          icon: 'badge2.png',
+        },
       ];
 
       const userBadges = [
         {
           id: '1',
           earned_at: '2023-01-01T12:00:00Z',
-          badges: { id: '1', name: 'First Badge', description: 'Your first badge', icon: 'badge1.png' }
-        }
+          badges: {
+            id: '1',
+            name: 'First Badge',
+            description: 'Your first badge',
+            icon: 'badge1.png',
+          },
+        },
       ];
 
       // Test fetch all badges
@@ -1090,7 +1225,9 @@ describe('Supabase Client', () => {
 
       const result = await upvoteProduct(productId);
 
-      expect(mockRpc).toHaveBeenCalledWith('handle_upvote', { p_product_id: productId });
+      expect(mockRpc).toHaveBeenCalledWith('handle_upvote', {
+        p_product_id: productId,
+      });
       expect(result).toBe(true);
     });
 
@@ -1099,12 +1236,12 @@ describe('Supabase Client', () => {
       const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
       const mockUpdate = jest.fn();
       const mockEq = jest.fn();
-      
+
       mockFrom.mockImplementation((table: string) => {
         if (table === 'notifications') {
           return {
             select: mockSelect,
-            update: mockUpdate.mockReturnValue({ eq: mockEq })
+            update: mockUpdate.mockReturnValue({ eq: mockEq }),
           };
         }
       });
@@ -1122,8 +1259,14 @@ describe('Supabase Client', () => {
       expect(markResult).toBe(false);
 
       // Verify error handling
-      expect(console.error).toHaveBeenCalledWith('Error fetching notifications:', fetchError);
-      expect(console.error).toHaveBeenCalledWith('Error marking notification 1 as read:', markError);
+      expect(console.error).toHaveBeenCalledWith(
+        'Error fetching notifications:',
+        fetchError,
+      );
+      expect(console.error).toHaveBeenCalledWith(
+        'Error marking notification 1 as read:',
+        markError,
+      );
     });
 
     it('should handle mixed success and failure scenarios', async () => {
@@ -1131,18 +1274,20 @@ describe('Supabase Client', () => {
       const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
       const mockUpdate = jest.fn();
       const mockEq = jest.fn();
-      
+
       mockFrom.mockImplementation((table: string) => {
         if (table === 'notifications') {
           return {
             select: mockSelect,
-            update: mockUpdate.mockReturnValue({ eq: mockEq })
+            update: mockUpdate.mockReturnValue({ eq: mockEq }),
           };
         }
       });
 
       // Successful fetch
-      const notifications = [{ id: '1', message: 'Test', created_at: '2023-01-01T12:00:00Z' }];
+      const notifications = [
+        { id: '1', message: 'Test', created_at: '2023-01-01T12:00:00Z' },
+      ];
       mockOrder.mockResolvedValue({ data: notifications, error: null });
       const fetchResult = await getNotifications();
       expect(fetchResult).toEqual(notifications);
@@ -1184,7 +1329,7 @@ describe('Supabase Client', () => {
       const largeDataset = Array.from({ length: 100 }, (_, i) => ({
         id: `${i + 1}`,
         message: largeMessage,
-        created_at: '2023-01-01T12:00:00Z'
+        created_at: '2023-01-01T12:00:00Z',
       }));
 
       mockOrder.mockResolvedValue({ data: largeDataset, error: null });
@@ -1203,11 +1348,13 @@ describe('Supabase Client', () => {
       const mockData = { id: '1', read: true };
       mockEq.mockResolvedValue({ data: mockData, error: null });
 
-      const operations = Array.from({ length: 20 }, () => markNotificationAsRead('1'));
+      const operations = Array.from({ length: 20 }, () =>
+        markNotificationAsRead('1'),
+      );
       const results = await Promise.all(operations);
 
       expect(results).toHaveLength(20);
-      expect(results.every(result => result === true)).toBe(true);
+      expect(results.every((result) => result === true)).toBe(true);
     });
   });
 });

@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 
 const MyProducts = () => {
   return (
@@ -12,13 +12,18 @@ const MyProducts = () => {
           Add Product
         </Button>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Your Submitted Products</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600">You haven't submitted any products yet. Start by adding your first product!</p>
+          {/* TODO: Fetch the logged-in user's products from Supabase */}
+          {/* TODO: Conditionally render the list of products or this message */}
+          <p className="text-gray-600">
+            You haven't submitted any products yet. Start by adding your first
+            product!
+          </p>
         </CardContent>
       </Card>
     </div>

@@ -2,7 +2,13 @@ import React from 'react';
 import { useNotifications } from '../hooks/useNotifications';
 
 const NotificationList: React.FC = () => {
-  const { data: notifications, isLoading, isError, markAsRead, removeNotification } = useNotifications();
+  const {
+    data: notifications,
+    isLoading,
+    isError,
+    markAsRead,
+    removeNotification,
+  } = useNotifications();
 
   if (isLoading) {
     return <div className="p-4">Loading notifications...</div>;
@@ -21,11 +27,16 @@ const NotificationList: React.FC = () => {
       <h3 className="text-lg font-semibold mb-4">Notifications</h3>
       <ul>
         {notifications.map((notification) => (
-          <li key={notification.id} className={`border-b py-2 ${!notification.read ? 'font-bold' : ''}`}>
+          <li
+            key={notification.id}
+            className={`border-b py-2 ${!notification.read ? 'font-bold' : ''}`}
+          >
             <div className="flex justify-between items-center">
               <div>
                 <p>{notification.message}</p>
-                <span className="text-sm text-gray-500">{new Date(notification.created_at).toLocaleString()}</span>
+                <span className="text-sm text-gray-500">
+                  {new Date(notification.created_at).toLocaleString()}
+                </span>
               </div>
               <div className="flex space-x-2">
                 {!notification.read && (
