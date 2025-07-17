@@ -1,21 +1,24 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, User, Bell, LogIn, LogOut } from "lucide-react";
+import { Search, User, Bell, LogIn, LogOut, Settings, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Header = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleAuthAction = () => {
-    if (user) {
-      signOut();
-    } else {
-      navigate("/auth");
-    }
+    navigate("/auth");
   };
   return (
     <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
@@ -52,10 +55,40 @@ export const Header = () => {
               67 Points
             </Badge>
 
-            <Button variant="outline" size="sm" onClick={handleAuthAction}>
-              {user ? <LogOut className="h-4 w-4 mr-2" /> : <LogIn className="h-4 w-4 mr-2" />}
-              {user ? "Sign Out" : "Sign In"}
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Account
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate("/profile")}>
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/my-products")}>
+                    <Package className="h-4 w-4 mr-2" />
+                    My Products
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/settings")}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="outline" size="sm" onClick={handleAuthAction}>
+                <LogIn className="h-4 w-4 mr-2" />
+                Sign In
+              </Button>
+            )}
           </div>
         </div>
       </div>
