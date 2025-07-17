@@ -101,3 +101,15 @@ export async function getUserBadges(userId: string) {
  }
  return data;
 }
+
+export async function upvoteProduct(productId: string) {
+  const { data, error } = await supabase.rpc('handle_upvote', { p_product_id: productId });
+
+  if (error) {
+    console.error(`Error upvoting product ${productId}:`, error);
+    return false;
+  }
+
+  // RPC calls usually return data or null/void on success depending on the function.
+  return true;
+}

@@ -10,13 +10,17 @@ import {
   ExternalLink, 
   TrendingUp,
   Star,
+  ThumbsUp,
   Eye,
   Trophy
 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/use-toast"; // Assuming toast is now a component
+import { useGetProductQuery } from "@/features/api/apiSlice"; // Assuming RTK Query hook for fetching a single product
+import { upvoteProduct } from "@/integrations/supabase/client"; // Assuming upvoteProduct is in this path
+import { useAuth } from '../../hooks/useAuth';
 
 interface Product {
-  id: number;
+  id: string; // Assuming product ID is a UUID (string)
   name: string;
   description: string;
   image: string;
@@ -26,48 +30,74 @@ interface Product {
   badges: string[];
   category: string;
   link: string;
+  upvoted_by_user?: boolean; // Optional: Indicates if the current user has upvoted this product
 }
 
 interface ProductCardProps {
   product: Product;
   rank: number;
-  currentUser: any;
+  // We will get user from useAuth
 }
 
-export const ProductCard = ({ product, rank, currentUser }: ProductCardProps) => {
-  const [isUpvoted, setIsUpvoted] = useState(false);
+export const ProductCard = ({ product, rank }: ProductCardProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
+  const { user } = useAuth();
   const [upvoteCount, setUpvoteCount] = useState(product.upvotes);
+  const [isUpvoting, setIsUpvoting] = useState(false);
+  const [hasUpvoted, setHasUpvoted] = useState(product.upvoted_by_user || false); // Use prop for initial state
+  
+  // Assuming you use RTK Query and have access to invalidate the query cache
+  const { refetch: refetchProduct } = useGetProductQuery(product.id); // Adjust hook name based on your apiSlice
 
-  const handleUpvote = () => {
-    if (currentUser.dailyLimits.upvoting.used >= currentUser.dailyLimits.upvoting.max) {
+  const handleUpvote = async () => {
+    if (!user) {
       toast({
-        title: "Daily limit reached",
-        description: "You've reached your daily upvoting limit of 20 points.",
+        title: "Login required",
+        description: "You must be logged in to upvote products.",
         variant: "destructive"
       });
-      return;
+      return; // Exit if user is not logged in
     }
 
-    setIsUpvoted(!isUpvoted);
-    setUpvoteCount(prev => isUpvoted ? prev - 1 : prev + 1);
-    
-    toast({
-      title: isUpvoted ? "Upvote removed" : "Product upvoted!",
-      description: isUpvoted ? "" : "+1 point earned",
-    });
+    if (user && user.dailyLimits && user.dailyLimits.upvoting.used >= user.dailyLimits.upvoting.max) {
+      toast({
+        title: "Upvote Limit Reached",
+        description: `You have reached your daily upvote limit of ${user.dailyLimits.upvoting.max}.`,
+        variant: "destructive"
+      });
+      return; // Exit if daily limit reached
+    }
+
+    setIsUpvoting(true);
+    const previousUpvoteCount = upvoteCount;
+    const previousHasUpvoted = hasUpvoted;
+
+    try {
+      const newUpvoteCount = previousHasUpvoted ? upvoteCount - 1 : upvoteCount + 1;
+    setUpvoteCount(newUpvoteCount);
+    setHasUpvoted(!hasUpvoted);
+
+    // TODO: Handle potential errors and revert optimistic update
+    } catch (error) {
+      console.error("Upvote failed:", error);
+      toast({
+        title: "Upvote failed",
+        description: "Could not process your upvote. Please try again.",
+        variant: "destructive",
+      });
+      // Revert optimistic update on failure
+      setUpvoteCount(previousUpvoteCount);
+      setHasUpvoted(previousHasUpvoted);
+    } finally {
+      setIsUpvoting(false);
+      toast({
+        title: hasUpvoted ? "Upvote removed" : "Product upvoted!",
+        description: hasUpvoted ? "" : "You've successfully upvoted this product.",
+      });
+    }
   };
 
-  const handleShare = () => {
-    if (currentUser.dailyLimits.sharing.used >= currentUser.dailyLimits.sharing.max) {
-      toast({
-        title: "Daily limit reached",
-        description: "You've reached your daily sharing limit of 20 points.",
-        variant: "destructive"
-      });
-      return;
-    }
-
+  const handleShare = () => {    if (user && user.dailyLimits && user.dailyLimits.sharing.used >= user.dailyLimits.sharing.max) {      toast({        title: "Sharing Limit Reached",        description: `You have reached your daily sharing limit of ${user.dailyLimits.sharing.max}.`,        variant: "destructive",      });      return;    }
     navigator.clipboard.writeText(window.location.href);
     toast({
       title: "Link copied!",
@@ -75,11 +105,10 @@ export const ProductCard = ({ product, rank, currentUser }: ProductCardProps) =>
     });
   };
 
-  const handleFollow = () => {
-    if (currentUser.dailyLimits.following.used >= currentUser.dailyLimits.following.max) {
+  const handleFollow = () => {    if (user && user.dailyLimits && user.dailyLimits.following.used >= user.dailyLimits.following.max) {
       toast({
-        title: "Daily limit reached",
-        description: "You've reached your daily following limit of 40 points.",
+        title: "Following Limit Reached",
+        description: `You have reached your daily following limit of ${user.dailyLimits.following.max}.`,
         variant: "destructive"
       });
       return;
@@ -164,12 +193,13 @@ export const ProductCard = ({ product, rank, currentUser }: ProductCardProps) =>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Button
-                  variant={isUpvoted ? "default" : "outline"}
+                  variant={hasUpvoted ? "default" : "outline"}
                   size="sm"
                   onClick={handleUpvote}
+                  disabled={isUpvoting || !user} // Disable if upvoting or not logged in
                   className="flex items-center gap-2"
                 >
-                  <Heart className={`h-4 w-4 ${isUpvoted ? "fill-current" : ""}`} />
+                  <ThumbsUp className={`h-4 w-4 ${hasUpvoted ? "fill-current" : ""}`} />
                   {upvoteCount}
                 </Button>
 
