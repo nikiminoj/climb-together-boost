@@ -1,2 +1,4 @@
 features:
   issue_commands: true
+reviews:
+  auto_title_instructions: true
