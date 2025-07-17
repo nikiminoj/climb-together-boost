@@ -14,22 +14,8 @@ import {
   Trophy,
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast'; // Assuming toast is now a component
-import { upvoteProduct } from '@/integrations/supabase/client'; // Assuming upvoteProduct is in this path
 import { useAuth } from '@/hooks/useAuth';
-
-interface Product {
-  id: string; // Assuming product ID is a UUID (string)
-  name: string;
-  description: string;
-  image: string;
-  author: string;
-  points: number;
-  upvotes: number;
-  badges: string[];
-  category: string;
-  link: string;
-  upvoted_by_user?: boolean; // Optional: Indicates if the current user has upvoted this product
-}
+import { Product } from '@/types/database'; // Import Product interface
 
 interface ProductCardProps {
   product: Product;
