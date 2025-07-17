@@ -10,6 +10,7 @@ import {
   Package,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -19,6 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useNotifications } from '@/hooks/useNotifications';
 
 import useUserData from '@/hooks/useUserData';
 
@@ -31,6 +33,13 @@ export const Header = () => {
     isLoading: isLoadingUserData,
     isError: isErrorUserData,
   } = useUserData(user?.id);
+
+  const {
+    notifications,
+    loading: isLoadingNotifications,
+    error: isErrorNotifications,
+  } = useNotifications();
+  const recentNotifications = notifications?.slice(0, 5) || [];
 
   return (
     <header className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
@@ -60,9 +69,40 @@ export const Header = () => {
           {/* Actions */}
           <div className="flex items-center gap-4">
             {user && (
-              <Button variant="ghost" size="sm">
-                <Bell className="h-4 w-4" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Bell className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+ <div className="p-2 text-sm font-semibold text-gray-700">Recent Notifications</div>
+ {isLoadingNotifications && <DropdownMenuItem className="text-gray-500 italic">Loading notifications...</DropdownMenuItem>}
+ {isErrorNotifications && <DropdownMenuItem className="text-red-500 italic">Error loading notifications.</DropdownMenuItem>}
+ {/* Display "No new notifications" if there are no recent notifications after loading and no error */}
+ {!isLoadingNotifications && !isErrorNotifications && recentNotifications.length === 0 && notifications && (
+ <DropdownMenuItem className="text-gray-500 italic">No new notifications</DropdownMenuItem>
+ )}
+ {!isLoadingNotifications && !isErrorNotifications && recentNotifications.length > 0 && notifications && recentNotifications.map((notification) => (
+ <DropdownMenuItem key={notification.id} className="flex items-center justify-between py-2 px-3 hover:bg-gray-100">
+ {/* Render notification content here */}
+ <div className="flex-1">{notification.message}</div>
+                {/* Add a visual indicator if notification is not read */}
+                {notification.isRead === false && (
+ <span className="ml-2 w-2 h-2 bg-blue-500 rounded-full"></span>
+                )}
+ </DropdownMenuItem>
+ ))}
+ {!isLoadingNotifications && !isErrorNotifications && notifications && notifications.length > 0 && (
+                  <>
+ <DropdownMenuSeparator />
+ <DropdownMenuItem asChild>
+ <Link to="/notifications" className="w-full text-center text-blue-600 hover:underline">View All Notifications</Link>
+ </DropdownMenuItem>
+                  </>
+ )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
 
             {user && (

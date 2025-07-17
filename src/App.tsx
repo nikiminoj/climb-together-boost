@@ -11,6 +11,8 @@ import Settings from './pages/Settings';
 import MyProducts from './pages/MyProducts';
 import NotFound from './pages/NotFound';
 import CategoryProducts from './pages/CategoryProducts';
+import NotificationsPage from './pages/Notifications';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import Categories from './pages/Categories';
 
 const queryClient = new QueryClient();
@@ -29,7 +31,11 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/my-products" element={<MyProducts />} />
             <Route path="/categories/:categoryId" element={<CategoryProducts />} />
-            <Route path="/categories" element={<Categories />} />
+            <Route path="/categories" element={<Categories />} />{' '}
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/notifications" element={<NotificationsPage />} />
+            </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

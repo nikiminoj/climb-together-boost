@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { X, Upload, Link, Tag } from 'lucide-react';
+import useCategories from '@/hooks/useCategories';
 import { toast } from '@/hooks/use-toast';
 
 interface SubmitProductFormProps {
@@ -28,8 +29,7 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
     tags: '',
   });
 
-  // TODO: Fetch product categories from the database
-  // const categories = [...];
+  const { data: categories, isLoading: isLoadingCategories, isError: isErrorCategories } = useCategories();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,15 +106,15 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map(
-                    (category) =>
-                      // TODO: Map over fetched categories and render SelectItem components
-                      // <SelectItem key={category.id} value={category.name}>
-                      //   {category.name}
-                      // </SelectItem>
-                      null, // Placeholder until categories are fetched
-                  )}
+                  {isLoadingCategories && <SelectItem value="loading" disabled>Loading categories...</SelectItem>}
+                  {isErrorCategories && <SelectItem value="error" disabled>Error loading categories</SelectItem>}
+                  {categories && categories.map((category) => (
+                    <SelectItem key={category.id} value={category.slug}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
+
               </Select>
             </div>
 
