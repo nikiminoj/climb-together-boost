@@ -71,3 +71,33 @@ export async function deleteNotification(notificationId: string) {
 
   return true;
 }
+
+export async function getAllBadges() {
+  const { data, error } = await supabase
+    .from('badges')
+    .select('*');
+
+ if (error) {
+ console.error('Error fetching all badges:', error);
+ return [];
+ }
+
+ return data;
+}
+
+export async function getUserBadges(userId: string) {
+  const { data, error } = await supabase
+    .from('user_badges')
+ .select(`
+ id,
+ earned_at,
+ badges (id, name, description, icon)
+ `)
+ .eq('user_id', userId);
+
+ if (error) {
+ console.error(`Error fetching badges for user ${userId}:`, error);
+ return [];
+ }
+ return data;
+}
