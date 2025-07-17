@@ -14,10 +14,10 @@ import {
   Eye,
   Trophy
 } from "lucide-react";
-import { toast } from "@/components/ui/use-toast"; // Assuming toast is now a component
+import { useToast } from "@/components/ui/use-toast"; // Assuming toast is now a component
 import { useGetProductQuery } from "@/features/api/apiSlice"; // Assuming RTK Query hook for fetching a single product
 import { upvoteProduct } from "@/integrations/supabase/client"; // Assuming upvoteProduct is in this path
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Product {
   id: string; // Assuming product ID is a UUID (string)
@@ -41,6 +41,7 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, rank }: ProductCardProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
+  const { toast } = useToast();
   const { user } = useAuth();
   const [upvoteCount, setUpvoteCount] = useState(product.upvotes);
   const [isUpvoting, setIsUpvoting] = useState(false);

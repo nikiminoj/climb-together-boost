@@ -51,6 +51,28 @@ ALTER TABLE user_badges ENABLE RLS;
 CREATE POLICY select_user_badges ON user_badges FOR SELECT TO authenticated USING (user_id = auth.uid());
 
 -- Assuming 'products' table already exists, alter it to add ranking columns
+-- Create the products table
+CREATE TABLE products (
+ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ name VARCHAR(255) NOT NULL,
+ description TEXT,
+ image VARCHAR(255),
+ author VARCHAR(255),
+ points INTEGER DEFAULT 0,
+ upvotes INTEGER DEFAULT 0,
+ badges TEXT[],
+ category VARCHAR(255),
+ link VARCHAR(255),
+ -- Add timestamps for created and updated at
+ created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Optional: Create an index on the author column for faster lookups
+CREATE INDEX idx_products_author ON products (author);
+
+-- Optional: Create an index on the category column for faster lookups
+CREATE INDEX idx_products_category ON products (category);
 -- If your products table has a different structure, you'll need to adjust this.
 ALTER TABLE products
 ADD COLUMN peer_push_points INTEGER DEFAULT 0,
