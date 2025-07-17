@@ -13,7 +13,12 @@
     "test:migrations": "vitest supabase/migrations/__tests__",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
-    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "supabase:push": "supabase db push",
+    "supabase:reset": "supabase db reset",
+    "supabase:migration:new": "supabase migration new",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+ "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "check-format": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "dependencies": {
