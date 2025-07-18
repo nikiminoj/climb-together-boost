@@ -1,0 +1,11 @@
+id,name,slug,description,icon,created_at
+e522b6ec-1d02-4e5e-9034-d3ab18b8f3e1,Tech,tech,All tech-related stuff,🔧,2025-07-18T04:00:00Z
+7c53bb6f-8b1b-42c9-b3a6-a2e4fdc14b8f,Gaming,gaming,Games and gear,🎮,2025-07-18T04:05:00Z
+a0f9ad2b-ec18-430a-8512-8d7199e1ec7a,Design,design,Creative tools and tips,🎨,2025-07-18T04:10:00Z
+f146f3a7-b96f-4d60-92c7-d354d92e3512,AI,ai,Artificial intelligence tools,🤖,2025-07-18T04:15:00Z
+32a05cb4-8fd0-4f98-a2ae-5d0a6f986b03,Productivity,productivity,Work smarter guides,📈,2025-07-18T04:20:00Z
+a4b21964-e7c2-4e33-863e-177d06f3a4b5,Education,education,Learning resources,📚,2025-07-18T04:25:00Z
+88ecb18f-b145-4429-a607-7092df4d5fcf,Mobile,mobile,Apps and platforms,📱,2025-07-18T04:30:00Z
+b302e5cb-2a17-4cc0-bc3c-3c7f2ddab3f9,Web,web,Web dev resources,🌐,2025-07-18T04:35:00Z
+4de8a16e-3d3c-4ef0-bac6-3f5293fbc6e3,Tools,tools,Developer tools,🛠️,2025-07-18T04:40:00Z
+49c18eaf-9523-471e-b30c-735f43c1c783,Community,community,Social & collaborative,👥,2025-07-18T04:45:00Z

@@ -1,0 +1,11 @@
+id,name,description,image,author,points,upvotes,badges,category,link,peer_push_points,user_id,created_at,updated_at
+bddf5b71-7e21-44cc-b798-b12a66746b07,Speed Booster,Improves performance,speed.png,niki_dev,12,30,"speedy,top",tech,https://speed.io,5,ab6028c7-a72a-4464-9e87-ec01f7c17317,2025-07-18T04:20:00Z,2025-07-18T04:21:00Z
+c4d4dd8b-b947-470b-a5e5-517dbdbf371d,XP Amplifier,Increases EXP gain,xp.png,janedoe,5,12,"rare,elite",education,https://xpboost.io,3,d09d001d-6e9d-4597-bc3b-f5991f7aefad,2025-07-18T04:22:00Z,2025-07-18T04:23:00Z
+5d5095a6-070b-40d9-a79c-3e0ec0dba8a9,CleanUI,Minimal design tools,ui.png,devkit,15,20,"sleek,design",design,https://cleanui.dev,2,459cfafb-854c-4585-9590-fa8a346ee8d5,2025-07-18T04:24:00Z,2025-07-18T04:25:00Z
+f3ea6b41-6d5e-4fa4-b6f0-dbb741c76e4f,PromptMagic,Generate smart prompts,magic.png,aijunkie,10,18,"ai,wizard",ai,https://promptmagic.ai,1,ecfe400a-eb11-4ea9-aa8b-491408162925,2025-07-18T04:26:00Z,2025-07-18T04:27:00Z
+fa0e2d68-401e-4f2d-a36f-e205e2ce8b5d,FocusApp,Task management tool,focus.png,focusme,8,25,"productive,focus",web,https://focus.app,4,5d5b9468-462b-417d-8dcb-eb1994d0e6f7,2025-07-18T04:28:00Z,2025-07-18T04:29:00Z
+acfb86c1-b36b-494a-b798-fbf3b159b265,TutorBot,Learning AI assistant,tutor.png,codequeen,14,22,"smart,helper",education,https://tutorbot.ai,3,ce200c9b-29a2-423a-9c96-ad75532406f8,2025-07-18T04:30:00Z,2025-07-18T04:31:00Z
+1f5e8916-5311-4e0b-a4c6-4e791bd66e61,FlutterEase,Optimize Flutter builds,flutter.png,flutter_ace,6,16,"flutter,snappy",mobile,https://flutterease.dev,3,f5570ab7-9d85-4e61-9f99-d2f2480cf539,2025-07-18T04:32:00Z,2025-07-18T04:33:00Z
+a3a38a7f-2bb9-4045-bdb0-04e745b48838,WebScout,Best web frameworks,scout.png,builderhub,11,14,"explorer,web",tools,https://webscout.io,2,b6953cd2-47d9-4cac-9e53-557b6593e87c,2025-07-18T04:34:00Z,2025-07-18T04:35:00Z
+2f2b9174-b1fc-4092-98a9-e3e5fd100ea3,ToolboxX,Dev tool manager,toolbox.png,nerdybyte,9,28,"tools,geeky",tools,https://toolboxx.dev,5,71146e1e-c09b-428d-90d6-1ba3515fa87b,2025-07-18T04:36:00Z,2025-07-18T04:37:00Z
+631e97b2-1e5e-4b66-8473-8f09e1c2c4c1,FriendZone,Connect and share,social.png,gamegod,7,17,"social,community",community,https://friendzone.social,1,cbef089c-9e81-4540-a734-95cdbc2d7eb6,2025-07-18T04:38:00Z,2025-07-18T04:39:00Z

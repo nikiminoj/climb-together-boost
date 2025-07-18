@@ -1,0 +1,11 @@
+id,user_id,type,message,read,created_at,link
+b8f282fd-49d1-4912-a28f-0d37a70f594e,ab6028c7-a72a-4464-9e87-ec01f7c17317,info,Your product got upvoted!,false,2025-07-18T05:00:00Z,https://speed.io
+f7de9a8d-8457-4da1-9899-13cd88f11b50,d09d001d-6e9d-4597-bc3b-f5991f7aefad,reminder,Complete your profile,true,2025-07-18T05:01:00Z,https://profile.io
+e1f3f802-c05b-4e81-a3a8-ef49e037e56d,459cfafb-854c-4585-9590-fa8a346ee8d5,promotion,Check out CleanUI,false,2025-07-18T05:02:00Z,https://cleanui.dev
+a1808eec-1de8-498a-af27-4c1272374e8e,ecfe400a-eb11-4ea9-aa8b-491408162925,info,New comment on PromptMagic,true,2025-07-18T05:03:00Z,https://promptmagic.ai
+27ec1fd2-eaac-4b52-9cd6-bbe1f8a3568b,cbef089c-9e81-4540-a734-95cdbc2d7eb6,update,FriendZone just got updated,false,2025-07-18T05:04:00Z,https://friendzone.social
+fcd7f211-a592-41f7-a02f-21dc5ffdb305,f5570ab7-9d85-4e61-9f99-d2f2480cf539,info,FlutterEase reached 500 users!,true,2025-07-18T05:05:00Z,https://flutterease.dev
+d61f2c1b-c1fa-4ee0-bd08-d6d3066b4693,71146e1e-c09b-428d-90d6-1ba3515fa87b,warning,ToolboxX needs verification,false,2025-07-18T05:06:00Z,https://toolboxx.dev
+d3a3b1cb-e62a-4ff6-96b8-efbb83e4e6b6,ce200c9b-29a2-423a-9c96-ad75532406f8,info,TutorBot added new topics,true,2025-07-18T05:07:00Z,https://tutorbot.ai
+eb5e3f9f-228b-4aa7-8e5b-badcbcf942e8,b6953cd2-47d9-4cac-9e53-557b6593e87c,promotion,Get 50% off WebScout,false,2025-07-18T05:08:00Z,https://webscout.io
+a63f54a7-35aa-48ec-a735-e11212cc3512,5d5b9468-462b-417d-8dcb-eb1994d0e6f7,reminder,FocusApp session overdue,true,2025-07-18T05:09:00Z,https://focus.app
