@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import useUserData from '@/hooks/useUserData';
 import { Product } from '@/types/database';
 
 interface ProductCardProps {
@@ -27,6 +27,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
   const [isFollowing, setIsFollowing] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { data: userData } = useUserData(user?.id || null);
   const [upvoteCount, setUpvoteCount] = useState(product.upvotes);
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [hasUpvoted, setHasUpvoted] = useState(
@@ -44,12 +45,12 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
     }
 
     if (
-      user?.dailyLimits &&
-      user.dailyLimits.upvoting.used >= user.dailyLimits.upvoting.max
+      userData?.dailyLimits &&
+      userData.dailyLimits.upvoting.used >= userData.dailyLimits.upvoting.max
     ) {
       toast({
         title: 'Upvote Limit Reached',
-        description: `You have reached your daily upvote limit of ${user.dailyLimits.upvoting.max}.`,
+        description: `You have reached your daily upvote limit of ${userData.dailyLimits.upvoting.max}.`,
         variant: 'destructive',
       });
       return;
@@ -90,12 +91,12 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
 
   const handleShare = () => {
     if (
-      user?.dailyLimits &&
-      user.dailyLimits.sharing.used >= user.dailyLimits.sharing.max
+      userData?.dailyLimits &&
+      userData.dailyLimits.sharing.used >= userData.dailyLimits.sharing.max
     ) {
       toast({
         title: 'Sharing Limit Reached',
-        description: `You have reached your daily sharing limit of ${user.dailyLimits.sharing.max}.`,
+        description: `You have reached your daily sharing limit of ${userData.dailyLimits.sharing.max}.`,
         variant: 'destructive',
       });
       return;
@@ -109,12 +110,12 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
 
   const handleFollow = () => {
     if (
-      user?.dailyLimits &&
-      user.dailyLimits.following.used >= user.dailyLimits.following.max
+      userData?.dailyLimits &&
+      userData.dailyLimits.following.used >= userData.dailyLimits.following.max
     ) {
       toast({
         title: 'Following Limit Reached',
-        description: `You have reached your daily following limit of ${user.dailyLimits.following.max}.`,
+        description: `You have reached your daily following limit of ${userData.dailyLimits.following.max}.`,
         variant: 'destructive',
       });
       return;

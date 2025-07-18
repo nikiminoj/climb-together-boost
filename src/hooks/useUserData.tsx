@@ -1,14 +1,13 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface UserData {
   id: string;
-  id: string;
-  name: string; // Assuming 'name' comes from profiles or auth.users
-  points: number; // Assuming 'points' comes from profiles
-  rank: number; // Placeholder or fetched from a ranking system
+  name: string;
+  points: number;
+  rank: number;
   dailyLimits: {
-    // Placeholder for daily limits
     sharing: { used: number; max: number };
     upvoting: { used: number; max: number };
     commenting: { used: number; max: number };
@@ -17,7 +16,6 @@ interface UserData {
 }
 
 interface UseUserDataResult {
-  data: UserData | null;
   data: UserData | null;
   isLoading: boolean;
   isError: boolean;
@@ -44,43 +42,29 @@ const useUserData = (userId: string | null): UseUserDataResult => {
       setIsError(false);
       setError(null);
 
-      // Fetch data from auth.users and profiles table
-      const { data: authUserData, error: authError } = await supabase
-        .from('auth.users') // Assuming auth.users table
-        .select('id')
-        .eq('id', userId)
-        .single();
+      try {
+        // Fetch data from profiles table
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('username')
+          .eq('id', userId)
+          .single();
 
-      if (authError) {
-        setIsError(true);
-        setError(authError);
-        setData(null);
-        setIsLoading(false);
-        return;
-      }
+        if (profileError && profileError.code !== 'PGRST116') {
+          setIsError(true);
+          setError(profileError);
+          setData(null);
+          setIsLoading(false);
+          return;
+        }
 
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles') // Assuming profiles table name
-        .select('username, points') // Select the columns you need from profiles
-        .eq('id', userId)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        // PGRST116 is "Planned no rows" - handle case where profile doesn't exist yet
-        setIsError(true);
-        setError(profileError);
-        setData(null);
-        setIsLoading(false);
-        return;
-      } else {
-        // Combine data from both tables and add placeholders
+        // Create user data with default values
         const combinedUserData: UserData = {
-          id: userId, // Use the provided userId
-          name: profileData?.username || authUserData?.id || 'User', // Use username from profile or user ID
-          points: profileData?.points || 0, // Use points from profile or default to 0
-          rank: 0, // Placeholder rank
+          id: userId,
+          name: profileData?.username || 'User',
+          points: 0, // Default points since profiles table doesn't have points column
+          rank: 0,
           dailyLimits: {
-            // Placeholder daily limits
             sharing: { used: 0, max: 5 },
             upvoting: { used: 0, max: 10 },
             commenting: { used: 0, max: 5 },
@@ -88,7 +72,12 @@ const useUserData = (userId: string | null): UseUserDataResult => {
           },
         };
         setData(combinedUserData);
+      } catch (err) {
+        setIsError(true);
+        setError(err as Error);
+        setData(null);
       }
+      
       setIsLoading(false);
     };
 
