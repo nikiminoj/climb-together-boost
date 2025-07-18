@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,14 +14,13 @@ import {
   Eye,
   Trophy,
 } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast'; // Assuming toast is now a component
+import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { Product } from '@/types/database'; // Import Product interface
+import { Product } from '@/types/database';
 
 interface ProductCardProps {
   product: Product;
   rank: number;
-  // We will get user from useAuth
 }
 
 export const ProductCard = ({ product, rank }: ProductCardProps) => {
@@ -31,7 +31,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [hasUpvoted, setHasUpvoted] = useState(
     product.upvoted_by_user || false,
-  ); // Use prop for initial state
+  );
 
   const handleUpvote = async () => {
     if (!user) {
@@ -40,12 +40,11 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
         description: 'You must be logged in to upvote products.',
         variant: 'destructive',
       });
-      return; // Exit if user is not logged in
+      return;
     }
 
     if (
-      user &&
-      user.dailyLimits &&
+      user?.dailyLimits &&
       user.dailyLimits.upvoting.used >= user.dailyLimits.upvoting.max
     ) {
       toast({
@@ -53,7 +52,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
         description: `You have reached your daily upvote limit of ${user.dailyLimits.upvoting.max}.`,
         variant: 'destructive',
       });
-      return; // Exit if daily limit reached
+      return;
     }
 
     setIsUpvoting(true);
@@ -91,8 +90,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
 
   const handleShare = () => {
     if (
-      user &&
-      user.dailyLimits &&
+      user?.dailyLimits &&
       user.dailyLimits.sharing.used >= user.dailyLimits.sharing.max
     ) {
       toast({
@@ -111,8 +109,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
 
   const handleFollow = () => {
     if (
-      user &&
-      user.dailyLimits &&
+      user?.dailyLimits &&
       user.dailyLimits.following.used >= user.dailyLimits.following.max
     ) {
       toast({
@@ -130,24 +127,22 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
     });
   };
 
-  // TODO: Update this function to use badge data fetched from the database
-  const getBadgeVariant = (badge: string) => {
+  const getBadgeVariant = (badge: string): "default" | "secondary" | "destructive" | "outline" => {
     switch (badge) {
-      // case "Trending": return "default";
-      // case "Product of the Day": return "secondary";
-      // case "Hot": return "destructive";
-      // case "Rising": return "outline";
+      case "Trending": return "default";
+      case "Product of the Day": return "secondary";
+      case "Hot": return "destructive";
+      case "Rising": return "outline";
       default:
         return 'secondary';
     }
   };
 
-  // TODO: Update this function to use badge data fetched from the database (including icons)
   const getBadgeIcon = (badge: string) => {
     switch (badge) {
-      // case "Trending": return <TrendingUp className="h-3 w-3" />;
-      // case "Product of the Day": return <Trophy className="h-3 w-3" />;
-      // case "Hot": return <Star className="h-3 w-3" />;
+      case "Trending": return <TrendingUp className="h-3 w-3" />;
+      case "Product of the Day": return <Trophy className="h-3 w-3" />;
+      case "Hot": return <Star className="h-3 w-3" />;
       default:
         return null;
     }
@@ -193,7 +188,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
 
               {/* Badges */}
               <div className="flex gap-2 mb-4">
-                {product.badges.map((badge) => (
+                {product.badges?.map((badge) => (
                   <Badge
                     key={badge}
                     variant={getBadgeVariant(badge)}
@@ -213,7 +208,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
                   variant={hasUpvoted ? 'default' : 'outline'}
                   size="sm"
                   onClick={handleUpvote}
-                  disabled={isUpvoting || !user} // Disable if upvoting or not logged in
+                  disabled={isUpvoting || !user}
                   className="flex items-center gap-2"
                 >
                   <ThumbsUp
