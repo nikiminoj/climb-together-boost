@@ -1,23 +1,14 @@
+
 import React from 'react';
-import { useNotifications } from '../hooks/useNotifications';
+import { Tables } from '@/integrations/supabase/types';
 
-const NotificationList: React.FC = () => {
-  const {
-    data: notifications,
-    isLoading,
-    isError,
-    markAsRead,
-    removeNotification,
-  } = useNotifications();
+type Notification = Tables<'notifications'>;
 
-  if (isLoading) {
-    return <div className="p-4">Loading notifications...</div>;
-  }
+interface NotificationListProps {
+  notifications: Notification[];
+}
 
-  if (isError) {
-    return <div className="p-4 text-red-500">Error loading notifications.</div>;
-  }
-
+const NotificationList: React.FC<NotificationListProps> = ({ notifications }) => {
   if (!notifications || notifications.length === 0) {
     return <div className="p-4">No notifications yet.</div>;
   }
@@ -35,20 +26,18 @@ const NotificationList: React.FC = () => {
               <div>
                 <p>{notification.message}</p>
                 <span className="text-sm text-gray-500">
-                  {new Date(notification.created_at).toLocaleString()}
+                  {new Date(notification.created_at || '').toLocaleString()}
                 </span>
               </div>
               <div className="flex space-x-2">
                 {!notification.read && (
                   <button
-                    onClick={() => markAsRead(notification.id)}
                     className="text-blue-500 hover:underline text-sm"
                   >
                     Mark as Read
                   </button>
                 )}
                 <button
-                  onClick={() => removeNotification(notification.id)}
                   className="text-red-500 hover:underline text-sm"
                 >
                   Delete

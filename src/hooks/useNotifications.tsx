@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getNotifications,
@@ -6,11 +7,12 @@ import {
   supabase,
 } from '../integrations/supabase/client';
 import { useEffect } from 'react';
+import { useAuth } from './useAuth';
 
 export const useNotifications = () => {
   const queryClient = useQueryClient();
-  const session = supabase.auth.getSession();
-  const userId = session?.data?.session?.user?.id;
+  const { user } = useAuth();
+  const userId = user?.id;
 
   const {
     data: notifications,
@@ -26,14 +28,14 @@ export const useNotifications = () => {
     mutationFn: (notificationId: string) =>
       markNotificationAsRead(notificationId),
     onSuccess: () => {
-      queryClient.invalidateQueries(['notifications', userId]);
+      queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
     },
   });
 
   const removeNotificationMutation = useMutation({
     mutationFn: (notificationId: string) => deleteNotification(notificationId),
     onSuccess: () => {
-      queryClient.invalidateQueries(['notifications', userId]);
+      queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
     },
   });
 
@@ -45,7 +47,7 @@ export const useNotifications = () => {
     removeNotificationMutation.mutate(notificationId);
   };
 
-  // Optional: Realtime subscription (can be added here or in a separate effect)
+  // Optional: Realtime subscription
   useEffect(() => {
     if (!userId) return;
 
@@ -53,10 +55,10 @@ export const useNotifications = () => {
       .channel(`notifications:user_id=eq.${userId}`)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'notifications' },
+        { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
         (payload) => {
           console.log('New notification received:', payload);
-          queryClient.invalidateQueries(['notifications', userId]);
+          queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
         },
       )
       .subscribe();
@@ -67,12 +69,12 @@ export const useNotifications = () => {
   }, [userId, queryClient]);
 
   return {
-    notifications,
+    data: notifications,
     isLoading,
-    error,
+    isError: !!error,
     markAsRead,
     removeNotification,
-    isMarkingAsRead: markAsReadMutation.isLoading,
-    isRemovingNotification: removeNotificationMutation.isLoading,
+    isMarkingAsRead: markAsReadMutation.isPending,
+    isRemovingNotification: removeNotificationMutation.isPending,
   };
 };

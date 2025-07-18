@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -21,7 +22,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useNotifications } from '@/hooks/useNotifications';
-
 import useUserData from '@/hooks/useUserData';
 
 export const Header = () => {
@@ -35,10 +35,11 @@ export const Header = () => {
   } = useUserData(user?.id);
 
   const {
-    notifications,
-    loading: isLoadingNotifications,
-    error: isErrorNotifications,
+    data: notifications,
+    isLoading: isLoadingNotifications,
+    isError: isErrorNotifications,
   } = useNotifications();
+  
   const recentNotifications = notifications?.slice(0, 5) || [];
 
   return (
@@ -71,36 +72,55 @@ export const Header = () => {
             {user && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="relative">
                     <Bell className="h-4 w-4" />
+                    {recentNotifications.filter(n => !n.read).length > 0 && (
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
- <div className="p-2 text-sm font-semibold text-gray-700">Recent Notifications</div>
- {isLoadingNotifications && <DropdownMenuItem className="text-gray-500 italic">Loading notifications...</DropdownMenuItem>}
- {isErrorNotifications && <DropdownMenuItem className="text-red-500 italic">Error loading notifications.</DropdownMenuItem>}
- {/* Display "No new notifications" if there are no recent notifications after loading and no error */}
- {!isLoadingNotifications && !isErrorNotifications && recentNotifications.length === 0 && notifications && (
- <DropdownMenuItem className="text-gray-500 italic">No new notifications</DropdownMenuItem>
- )}
- {!isLoadingNotifications && !isErrorNotifications && recentNotifications.length > 0 && notifications && recentNotifications.map((notification) => (
- <DropdownMenuItem key={notification.id} className="flex items-center justify-between py-2 px-3 hover:bg-gray-100">
- {/* Render notification content here */}
- <div className="flex-1">{notification.message}</div>
-                {/* Add a visual indicator if notification is not read */}
-                {notification.isRead === false && (
- <span className="ml-2 w-2 h-2 bg-blue-500 rounded-full"></span>
-                )}
- </DropdownMenuItem>
- ))}
- {!isLoadingNotifications && !isErrorNotifications && notifications && notifications.length > 0 && (
-                  <>
- <DropdownMenuSeparator />
- <DropdownMenuItem asChild>
- <Link to="/notifications" className="w-full text-center text-blue-600 hover:underline">View All Notifications</Link>
- </DropdownMenuItem>
-                  </>
- )}
+                <DropdownMenuContent align="end" className="w-80">
+                  <div className="p-2 text-sm font-semibold text-gray-700">Recent Notifications</div>
+                  {isLoadingNotifications && (
+                    <DropdownMenuItem className="text-gray-500 italic">
+                      Loading notifications...
+                    </DropdownMenuItem>
+                  )}
+                  {isErrorNotifications && (
+                    <DropdownMenuItem className="text-red-500 italic">
+                      Error loading notifications.
+                    </DropdownMenuItem>
+                  )}
+                  {!isLoadingNotifications && !isErrorNotifications && recentNotifications.length === 0 && (
+                    <DropdownMenuItem className="text-gray-500 italic">
+                      No new notifications
+                    </DropdownMenuItem>
+                  )}
+                  {!isLoadingNotifications && !isErrorNotifications && recentNotifications.length > 0 && 
+                    recentNotifications.map((notification) => (
+                      <DropdownMenuItem key={notification.id} className="flex items-start justify-between py-2 px-3 hover:bg-gray-100">
+                        <div className="flex-1 pr-2">
+                          <div className="text-sm">{notification.message}</div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(notification.created_at || '').toLocaleDateString()}
+                          </div>
+                        </div>
+                        {!notification.read && (
+                          <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></span>
+                        )}
+                      </DropdownMenuItem>
+                    ))
+                  }
+                  {!isLoadingNotifications && !isErrorNotifications && notifications && notifications.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/notifications" className="w-full text-center text-blue-600 hover:underline">
+                          View All Notifications
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
