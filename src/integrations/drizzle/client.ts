@@ -1,4 +1,3 @@
-
 import { db } from '@/lib/db';
 import { 
   products, 
@@ -12,6 +11,7 @@ import {
 } from '@/lib/schema';
 import { eq, desc, and, gte, lt, arrayContains } from 'drizzle-orm';
 import { supabase } from '@/integrations/supabase/client';
+import { randomUUID } from 'crypto';
 
 export async function getNotifications() {
   try {
@@ -206,6 +206,7 @@ export async function upvoteProduct(productId: string) {
 
     if (existingUpvote.length === 0) {
       await db.insert(productUpvotes).values({
+        id: randomUUID(),
         userId: user.id,
         productId: productId,
       });
