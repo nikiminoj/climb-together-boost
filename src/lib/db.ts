@@ -1,9 +1,7 @@
 
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema';
+// For browser compatibility, we'll use Supabase's database functions
+// instead of direct postgres connection
+import { supabase } from '@/integrations/supabase/client';
 
-const connectionString = 'postgresql://postgres.mcbuxkyofjngibhxvxvk:password@aws-0-us-west-1.pooler.supabase.com:6543/postgres';
-
-const client = postgres(connectionString);
-export const db = drizzle(client, { schema });
+// Export supabase client for database operations
+export const db = supabase;
