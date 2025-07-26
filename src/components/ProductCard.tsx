@@ -67,7 +67,20 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
       setUpvoteCount(newUpvoteCount);
       setHasUpvoted(!hasUpvoted);
 
-      // TODO: Handle potential errors and revert optimistic update
+      // Import the upvoteProduct function from Drizzle client
+      const { upvoteProduct } = await import('@/integrations/drizzle/client');
+      const success = await upvoteProduct(product.id);
+      
+      if (!success) {
+        // Revert optimistic update on failure
+        setUpvoteCount(previousUpvoteCount);
+        setHasUpvoted(previousHasUpvoted);
+        toast({
+          title: 'Upvote failed',
+          description: 'Could not process your upvote. Please try again.',
+          variant: 'destructive',
+        });
+      }
     } catch (error) {
       console.error('Upvote failed:', error);
       toast({
@@ -80,12 +93,12 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
       setHasUpvoted(previousHasUpvoted);
     } finally {
       setIsUpvoting(false);
-      toast({
-        title: hasUpvoted ? 'Upvote removed' : 'Product upvoted!',
-        description: hasUpvoted
-          ? ''
-          : "You've successfully upvoted this product.",
-      });
+      if (hasUpvoted) {
+        toast({
+          title: 'Product upvoted!',
+          description: "You've successfully upvoted this product.",
+        });
+      }
     }
   };
 

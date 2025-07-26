@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { getUserProfile } from '@/integrations/drizzle/client';
 
 interface UserData {
   id: string;
@@ -43,26 +43,12 @@ const useUserData = (userId: string | null): UseUserDataResult => {
       setError(null);
 
       try {
-        // Fetch data from profiles table
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('id', userId)
-          .single();
+        const profileData = await getUserProfile(userId);
 
-        if (profileError && profileError.code !== 'PGRST116') {
-          setIsError(true);
-          setError(profileError);
-          setData(null);
-          setIsLoading(false);
-          return;
-        }
-
-        // Create user data with default values
         const combinedUserData: UserData = {
           id: userId,
           name: profileData?.username || 'User',
-          points: 0, // Default points since profiles table doesn't have points column
+          points: 0,
           rank: 0,
           dailyLimits: {
             sharing: { used: 0, max: 5 },

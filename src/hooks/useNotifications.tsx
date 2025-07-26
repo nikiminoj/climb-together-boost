@@ -4,9 +4,7 @@ import {
   getNotifications,
   markNotificationAsRead,
   deleteNotification,
-  supabase,
-} from '../integrations/supabase/client';
-import { useEffect } from 'react';
+} from '@/integrations/drizzle/client';
 import { useAuth } from './useAuth';
 
 export const useNotifications = () => {
@@ -21,7 +19,7 @@ export const useNotifications = () => {
   } = useQuery({
     queryKey: ['notifications', userId],
     queryFn: () => getNotifications(),
-    enabled: !!userId, // Only fetch if userId exists (user is logged in)
+    enabled: !!userId,
   });
 
   const markAsReadMutation = useMutation({
@@ -46,27 +44,6 @@ export const useNotifications = () => {
   const removeNotification = (notificationId: string) => {
     removeNotificationMutation.mutate(notificationId);
   };
-
-  // Optional: Realtime subscription
-  useEffect(() => {
-    if (!userId) return;
-
-    const channel = supabase
-      .channel(`notifications:user_id=eq.${userId}`)
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
-        (payload) => {
-          console.log('New notification received:', payload);
-          queryClient.invalidateQueries({ queryKey: ['notifications', userId] });
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [userId, queryClient]);
 
   return {
     data: notifications,
