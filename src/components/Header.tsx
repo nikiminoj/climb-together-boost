@@ -102,7 +102,7 @@ export const Header = () => {
                         <div className="flex-1 pr-2">
                           <div className="text-sm">{notification.message}</div>
                           <div className="text-xs text-gray-500">
-                            {new Date(notification.created_at || '').toLocaleDateString()}
+                            {new Date(notification.createdAt).toLocaleDateString()}
                           </div>
                         </div>
                         {!notification.read && (

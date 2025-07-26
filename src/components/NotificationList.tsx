@@ -1,8 +1,6 @@
 
 import React from 'react';
-import { Tables } from '@/integrations/supabase/types';
-
-type Notification = Tables<'notifications'>;
+import { Notification } from '@/types/database';
 
 interface NotificationListProps {
   notifications: Notification[];
@@ -26,7 +24,7 @@ const NotificationList: React.FC<NotificationListProps> = ({ notifications }) =>
               <div>
                 <p>{notification.message}</p>
                 <span className="text-sm text-gray-500">
-                  {new Date(notification.created_at || '').toLocaleString()}
+                  {new Date(notification.createdAt).toLocaleString()}
                 </span>
               </div>
               <div className="flex space-x-2">

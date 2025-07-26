@@ -1,5 +1,5 @@
-// src/types/database.ts
 
+// Updated database types to match Drizzle schema
 export interface Product {
   id: string;
   name: string;
@@ -8,21 +8,57 @@ export interface Product {
   author: string | null;
   points: number;
   upvotes: number;
+  peerPushPoints: number;
   badges: string[] | null;
-  category: string | null; // Assuming category is stored as text or category ID, adjust if using foreign key relationship directly
+  category: string | null;
   link: string | null;
-  created_at: string;
-  updated_at: string;
-  peer_push_points: number;
-  upvoted_by_user?: boolean; // Added based on ProductCard usage
-  // Add other product fields as needed based on your schema
+  userId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  upvoted_by_user?: boolean; // Added for ProductCard usage
 }
 
 export interface Category {
   id: string;
   name: string;
-  slug: string;
+  slug: string | null;
   description: string | null;
   icon: string | null;
-  created_at: string;
+  createdAt: Date;
+}
+
+export interface Notification {
+  id: string;
+  userId: string | null;
+  message: string;
+  type: string;
+  read: boolean;
+  link: string | null;
+  createdAt: Date;
+}
+
+export interface UserBadge {
+  id: string;
+  userId: string | null;
+  badgeId: string | null;
+  earnedAt: Date;
+  badges: {
+    id: string;
+    name: string;
+    description: string | null;
+    icon: string | null;
+  };
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string | null;
+  icon: string | null;
+}
+
+export interface Profile {
+  id: string;
+  username: string | null;
+  createdAt: Date;
 }

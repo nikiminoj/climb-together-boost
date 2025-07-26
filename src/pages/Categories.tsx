@@ -1,10 +1,11 @@
+
 import React from 'react';
-import useCategories from '@/hooks/useCategories'; // Import the useCategories hook
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import useCategories from '@/hooks/useCategories';
+import { useNavigate } from 'react-router-dom';
 
 const Categories: React.FC = () => {
-  const navigate = useNavigate(); // Get the navigate function
-  const { data: categories, isLoading, isError } = useCategories(); // Use the hook
+  const navigate = useNavigate();
+  const { data: categories, isLoading, isError } = useCategories();
 
   if (isLoading) {
     return (
@@ -27,10 +28,12 @@ const Categories: React.FC = () => {
   return (
     <div>
       <h1>Product Categories</h1>
-      {categories?.length > 0 ? (
+      {categories && categories.length > 0 ? (
         <ul>
           {categories.map((category) => (
-            <li key={category.id} onClick={() => navigate(`/categories/${category.slug}`)} style={{ cursor: 'pointer' }}>{category.name}</li> // Make category clickable and navigate
+            <li key={category.id} onClick={() => navigate(`/categories/${category.slug || category.id}`)} style={{ cursor: 'pointer' }}>
+              {category.name}
+            </li>
           ))}
         </ul>
       ) : (<p>No categories found.</p>)}

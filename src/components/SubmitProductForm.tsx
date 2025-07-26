@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -109,7 +110,7 @@ export const SubmitProductForm = ({ onClose }: SubmitProductFormProps) => {
                   {isLoadingCategories && <SelectItem value="loading" disabled>Loading categories...</SelectItem>}
                   {isErrorCategories && <SelectItem value="error" disabled>Error loading categories</SelectItem>}
                   {categories && categories.map((category) => (
-                    <SelectItem key={category.id} value={category.slug}>
+                    <SelectItem key={category.id} value={category.slug || category.id}>
                       {category.name}
                     </SelectItem>
                   ))}

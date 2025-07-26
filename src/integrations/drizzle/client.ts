@@ -10,7 +10,7 @@ import {
   profiles,
   userRoles
 } from '@/lib/schema';
-import { eq, desc, and, gte, lt, contains } from 'drizzle-orm';
+import { eq, desc, and, gte, lt, arrayContains } from 'drizzle-orm';
 import { supabase } from '@/integrations/supabase/client';
 
 export async function getNotifications() {
@@ -105,16 +105,14 @@ export async function getProductsByCategory(categoryId: string, filters?: {
   publishedDateRange?: 'today' | 'this-week' | 'this-month' | 'previous-month';
 }) {
   try {
-    let query = db.select().from(products).where(eq(products.category, categoryId));
+    let baseQuery = db.select().from(products);
+    let conditions = [eq(products.category, categoryId)];
 
     // Apply filters
     if (filters?.isPromoted) {
-      // Assuming promoted products have specific badges
-      query = query.where(
-        and(
-          eq(products.category, categoryId),
-          contains(products.badges, ['Trending', 'Product of the Day', 'Hot'])
-        )
+      // Check if badges array contains promoted badges
+      conditions.push(
+        arrayContains(products.badges, ['Trending', 'Product of the Day', 'Hot'])
       );
     }
 
@@ -137,9 +135,8 @@ export async function getProductsByCategory(categoryId: string, filters?: {
         case 'previous-month':
           const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
           const endPrevMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-          query = query.where(
+          conditions.push(
             and(
-              eq(products.category, categoryId),
               gte(products.createdAt, prevMonth),
               lt(products.createdAt, endPrevMonth)
             )
@@ -148,16 +145,11 @@ export async function getProductsByCategory(categoryId: string, filters?: {
       }
 
       if (filters.publishedDateRange !== 'previous-month') {
-        query = query.where(
-          and(
-            eq(products.category, categoryId),
-            gte(products.createdAt, startDate)
-          )
-        );
+        conditions.push(gte(products.createdAt, startDate));
       }
     }
 
-    const result = await query;
+    const result = await baseQuery.where(and(...conditions));
     return result;
   } catch (error) {
     console.error('Error fetching products by category:', error);
