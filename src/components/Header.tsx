@@ -32,7 +32,9 @@ export const Header = () => {
     data: userData,
     isLoading: isLoadingUserData,
     isError: isErrorUserData,
-  } = useUserData(user?.id);
+  } = useUserData(user?.id || null);
+
+  console.log(userData);
 
   const {
     data: notifications,
@@ -147,11 +149,11 @@ export const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  <DropdownMenuItem onClick={() => navigate(`/u/${userData?.name}`)}>
                     <User className="h-4 w-4 mr-2" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/my-products')}>
+                  <DropdownMenuItem onClick={() => navigate('/user/my-products')}>
                     <Package className="h-4 w-4 mr-2" />
                     My Products
                   </DropdownMenuItem>

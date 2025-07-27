@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUserBadges } from '../hooks/useUserBadges';
+import { useUserBadges } from '@/hooks/useUserBadges';
 
 interface BadgeDisplayProps {
   userId: string;

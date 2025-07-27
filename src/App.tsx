@@ -26,10 +26,11 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/u/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/my-products" element={<MyProducts />} />
+            <Route path="/user/my-products" element={<MyProducts />} />
             <Route path="/categories/:categoryId" element={<CategoryProducts />} />
             <Route path="/categories" element={<Categories />} />{' '}
             {/* Protected Routes */}

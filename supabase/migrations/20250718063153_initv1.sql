@@ -15,7 +15,7 @@ CREATE TABLE categories (
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to view all categories
-CREATE POLICY select_categories ON categories FOR SELECT TO authenticated USING (true);
+-- CREATE POLICY select_categories ON categories FOR SELECT TO authenticated USING (true);
 
 -- Create a table for user profiles
 CREATE TABLE profiles (
@@ -28,13 +28,13 @@ CREATE TABLE profiles (
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to view their own profile
-CREATE POLICY select_profiles ON profiles FOR SELECT TO authenticated USING (id = auth.uid());
+-- CREATE POLICY select_profiles ON profiles FOR SELECT TO authenticated USING (id = auth.uid());
 
 -- Policy to allow authenticated users to insert their own profile
-CREATE POLICY insert_profiles ON profiles FOR INSERT TO authenticated WITH CHECK (id = auth.uid());
+-- CREATE POLICY insert_profiles ON profiles FOR INSERT TO authenticated WITH CHECK (id = auth.uid());
 
 -- Policy to allow authenticated users to update their own profile
-CREATE POLICY update_profiles ON profiles FOR UPDATE TO authenticated USING (id = auth.uid());
+-- CREATE POLICY update_profiles ON profiles FOR UPDATE TO authenticated USING (id = auth.uid());
 
 -- Create the products table
 CREATE TABLE products (
@@ -58,16 +58,16 @@ CREATE TABLE products (
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to view all products
-CREATE POLICY select_products ON products FOR SELECT TO authenticated USING (true);
+-- CREATE POLICY select_products ON products FOR SELECT TO authenticated USING (true);
 
 -- Policy to allow authenticated users to insert their own products
-CREATE POLICY insert_products ON products FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+-- CREATE POLICY insert_products ON products FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
 
 -- Policy to allow authenticated users to update their own products
-CREATE POLICY update_products ON products FOR UPDATE TO authenticated USING (user_id = auth.uid());
+-- CREATE POLICY update_products ON products FOR UPDATE TO authenticated USING (user_id = auth.uid());
 
 -- Policy to allow authenticated users to delete their own products
-CREATE POLICY delete_products ON products FOR DELETE TO authenticated USING (user_id = auth.uid());
+-- CREATE POLICY delete_products ON products FOR DELETE TO authenticated USING (user_id = auth.uid());
 
 -- Create indexes for better performance
 CREATE INDEX idx_products_author ON products (author);
@@ -89,13 +89,13 @@ CREATE TABLE notifications (
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow users to view their own notifications
-CREATE POLICY select_notifications ON notifications FOR SELECT TO authenticated USING (user_id = auth.uid());
+-- CREATE POLICY select_notifications ON notifications FOR SELECT TO authenticated USING (user_id = auth.uid());
 
 -- Policy to allow users to update their own notifications
-CREATE POLICY update_notifications ON notifications FOR UPDATE TO authenticated USING (user_id = auth.uid());
+-- CREATE POLICY update_notifications ON notifications FOR UPDATE TO authenticated USING (user_id = auth.uid());
 
 -- Policy to allow users to delete their own notifications
-CREATE POLICY delete_notifications ON notifications FOR DELETE TO authenticated USING (user_id = auth.uid());
+-- CREATE POLICY delete_notifications ON notifications FOR DELETE TO authenticated USING (user_id = auth.uid());
 
 -- Create the badges table
 CREATE TABLE badges (
@@ -109,7 +109,7 @@ CREATE TABLE badges (
 ALTER TABLE badges ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to view all badges
-CREATE POLICY select_badges ON badges FOR SELECT TO authenticated USING (true);
+-- CREATE POLICY select_badges ON badges FOR SELECT TO authenticated USING (true);
 
 -- Create the user_badges table
 CREATE TABLE user_badges (
@@ -124,7 +124,7 @@ CREATE TABLE user_badges (
 ALTER TABLE user_badges ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to view their own user_badges
-CREATE POLICY select_user_badges ON user_badges FOR SELECT TO authenticated USING (user_id = auth.uid());
+-- CREATE POLICY select_user_badges ON user_badges FOR SELECT TO authenticated USING (user_id = auth.uid());
 
 -- Create the tags table
 CREATE TABLE tags (
@@ -137,7 +137,7 @@ CREATE TABLE tags (
 ALTER TABLE tags ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to view all tags
-CREATE POLICY select_tags ON tags FOR SELECT TO authenticated USING (true);
+-- CREATE POLICY select_tags ON tags FOR SELECT TO authenticated USING (true);
 
 -- Create the product_tags join table
 CREATE TABLE product_tags (
@@ -150,7 +150,7 @@ CREATE TABLE product_tags (
 ALTER TABLE product_tags ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to view all product_tags
-CREATE POLICY select_product_tags ON product_tags FOR SELECT TO authenticated USING (true);
+-- CREATE POLICY select_product_tags ON product_tags FOR SELECT TO authenticated USING (true);
 
 -- Create the product_upvotes table
 CREATE TABLE product_upvotes (
@@ -165,13 +165,13 @@ CREATE TABLE product_upvotes (
 ALTER TABLE product_upvotes ENABLE ROW LEVEL SECURITY;
 
 -- Policy to allow authenticated users to insert their own upvotes
-CREATE POLICY insert_product_upvotes ON product_upvotes FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+-- CREATE POLICY insert_product_upvotes ON product_upvotes FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
 
 -- Policy to allow authenticated users to view all upvotes
-CREATE POLICY select_product_upvotes ON product_upvotes FOR SELECT TO authenticated USING (true);
+-- CREATE POLICY select_product_upvotes ON product_upvotes FOR SELECT TO authenticated USING (true);
 
 -- Policy to allow authenticated users to delete their own upvotes
-CREATE POLICY delete_product_upvotes ON product_upvotes FOR DELETE TO authenticated USING (user_id = auth.uid());
+-- CREATE POLICY delete_product_upvotes ON product_upvotes FOR DELETE TO authenticated USING (user_id = auth.uid());
 
 -- Create function to handle upvotes
 CREATE OR REPLACE FUNCTION handle_upvote(p_product_id UUID)

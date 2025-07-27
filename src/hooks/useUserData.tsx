@@ -43,8 +43,24 @@ const useUserData = (userId: string | null): UseUserDataResult => {
       setError(null);
 
       try {
+<<<<<<< Updated upstream
         const profileData = await getUserProfile(userId);
 
+=======
+        // Fetch data from profiles table
+        const { data: profileData, error: profileError } = await supabase.from('profiles').select('username').eq('id', userId).single();
+          console.log("What");
+        console.log(data);
+        if (profileError && profileError.code !== 'PGRST116') {
+          setIsError(true);
+          setError(profileError);
+          setData(null);
+          setIsLoading(false);
+          return;
+        }
+
+        // Create user data with default values
+>>>>>>> Stashed changes
         const combinedUserData: UserData = {
           id: userId,
           name: profileData?.username || 'User',

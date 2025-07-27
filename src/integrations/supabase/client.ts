@@ -3,12 +3,8 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = 'https://mcbuxkyofjngibhxvxvk.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jYnV4a3lvZmpuZ2liaHh2eHZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3Mzk1OTcsImV4cCI6MjA2ODMxNTU5N30.tf85GEz3hzdQ9fdGht4ocryRayGV67mu5xh_iJe9uv4';
-
-// Import the supabase client like this:
-// import { supabase } from "@/integrations/supabase/client";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 export const supabase = createClient<Database>(
   SUPABASE_URL,
@@ -22,5 +18,155 @@ export const supabase = createClient<Database>(
   },
 );
 
+<<<<<<< Updated upstream
 // Note: All database functions have been migrated to Drizzle ORM
 // This client now only handles authentication
+=======
+// Real-time subscription for new notifications
+supabase
+  .channel('notifications')
+  .on(
+    'postgres_changes',
+    { event: 'INSERT', schema: 'public', table: 'notifications' },
+    (payload) => {
+      console.log('New notification received:', payload.new);
+      // TODO: Integrate with useNotifications hook to update UI
+      // This could involve emitting an event or invalidating the query.
+    },
+  )
+  .subscribe();
+
+const sanitize = (raw: string) =>
+  raw.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+
+const extractBaseUsername = (email: string) => {
+  const [localPart] = email.split('@');
+  return sanitize(localPart);
+};
+
+  const doesUsernameExist = async (username: string) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('username', username)
+    .single();
+
+  return Boolean(data); // `true` if exists
+};
+
+export const generateAvailableUsername = async (email: string) => {
+  let base = extractBaseUsername(email);
+  let final = base;
+  let suffix = 0;
+
+  while (await doesUsernameExist(final)) {
+    suffix = Math.floor(Math.random() * 10000); // Random number
+    final = `${base}_${suffix}`;
+  }
+
+  return final;
+};
+
+export async function getNotifications() {
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching notifications:', error);
+    return [];
+  }
+
+  return data;
+}
+
+export async function markNotificationAsRead(notificationId: string) {
+  const { data, error } = await supabase
+    .from('notifications')
+    .update({ read: true })
+    .eq('id', notificationId);
+
+  if (error) {
+    console.error(
+      `Error marking notification ${notificationId} as read:`,
+      error,
+    );
+    return false;
+  }
+
+  // Supabase update operations typically return the updated row(s) if successful.
+  // We can check if data is returned to confirm success.
+  return data !== null;
+}
+
+export async function deleteNotification(notificationId: string) {
+  const { error } = await supabase
+    .from('notifications')
+    .delete()
+    .eq('id', notificationId);
+
+  if (error) {
+    console.error(`Error deleting notification ${notificationId}:`, error);
+    return false;
+  }
+
+  return true;
+}
+
+export async function getAllBadges() {
+  const { data, error } = await supabase.from('badges').select('*');
+
+  if (error) {
+    console.error('Error fetching all badges:', error);
+    return [];
+  }
+
+  return data;
+}
+
+/**
+ * Retrieves all badges earned by a specific user, including badge details.
+ *
+ * @param userId - The unique identifier of the user whose badges are being fetched
+ * @returns An array of user badge records with associated badge information, or an empty array if an error occurs
+ */
+export async function getUserBadges(userId: string) {
+  const { data, error } = await supabase
+    .from('user_badges')
+    .select(
+      `
+ id,
+ earned_at,
+ badges (id, name, description, icon)
+ `,
+    )
+    .eq('user_id', userId);
+
+  if (error) {
+    console.error(`Error fetching badges for user ${userId}:`, error);
+    return [];
+  }
+  return data;
+}
+
+/**
+ * Registers an upvote for a product by invoking the 'handle_upvote' remote procedure.
+ *
+ * @param productId - The unique identifier of the product to upvote
+ * @returns `true` if the upvote was successfully registered; otherwise, `false`
+ */
+export async function upvoteProduct(productId: string) {
+  const { data, error } = await supabase.rpc('handle_upvote', {
+    p_product_id: productId,
+  });
+
+  if (error) {
+    console.error(`Error upvoting product ${productId}:`, error);
+    return false;
+  }
+
+  // RPC calls usually return data or null/void on success depending on the function.
+  return true;
+}
+>>>>>>> Stashed changes

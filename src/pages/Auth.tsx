@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/integrations/supabase/client';
+import { generateAvailableUsername, supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 
@@ -36,7 +36,7 @@ const Auth = () => {
     try {
       const redirectUrl = `${window.location.origin}/`;
 
-      const { error } = await supabase.auth.signUp({
+      const { error, data } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -60,6 +60,14 @@ const Auth = () => {
           });
         }
       } else {
+        if (data && data.user?.id) {
+          const username = await generateAvailableUsername(email);
+          await supabase.from('profiles').upsert(
+            [{ id: data.user.id, username: username }],
+            { onConflict: 'id', ignoreDuplicates: true }
+          );
+        }
+
         toast({
           title: 'Check your email',
           description:
@@ -82,7 +90,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -102,6 +110,15 @@ const Auth = () => {
           });
         }
       } else {
+        console.log(data);
+        if (data && data.user?.id) {
+          const username = await generateAvailableUsername(email);
+          await supabase.from('profiles').upsert(
+            [{ id: data.user.id, username: username }],
+            { onConflict: 'id', ignoreDuplicates: true }
+          );
+        }
+
         toast({
           title: 'Welcome back!',
           description: "You've successfully signed in.",
@@ -157,6 +174,7 @@ const Auth = () => {
                   <Input
                     id="signin-email"
                     type="email"
+                    autoComplete='new-email'
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -177,6 +195,7 @@ const Auth = () => {
                       id="signin-password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Enter your password"
+                      autoComplete='new-password'
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
