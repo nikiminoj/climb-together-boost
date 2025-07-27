@@ -31,7 +31,7 @@ const getRankColor = (rank: number) => {
 
 export const Leaderboard = () => {
   // TODO: Fetch top users from Supabase and handle loading/error states
-  const topUsers = []; // Replace with fetched data
+  const topUsers: Array<{rank: number, name: string, points: number}> = []; // Replace with fetched data
 
   if (topUsers.length === 0) {
     return <div>Loading leaderboard...</div>; // Or a skeleton loader

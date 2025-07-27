@@ -23,7 +23,7 @@ const Index = () => {
     data: userData,
     isLoading: isLoadingUserData,
     isError: isErrorUserData,
-  } = useUserData(user?.id);
+  } = useUserData(user?.id || null);
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [timeFilter, setTimeFilter] = useState('today');
 

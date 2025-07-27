@@ -62,8 +62,8 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
 
     try {
       const newUpvoteCount = previousHasUpvoted
-        ? upvoteCount - 1
-        : upvoteCount + 1;
+        ? (upvoteCount || 0) - 1
+        : (upvoteCount || 0) + 1;
       setUpvoteCount(newUpvoteCount);
       setHasUpvoted(!hasUpvoted);
 
@@ -177,7 +177,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
           {/* Product Image */}
           <div className="flex-shrink-0">
             <img
-              src={product.image}
+              src={product.image || ''}
               alt={product.name}
               className="w-20 h-20 rounded-lg object-cover"
             />
@@ -253,7 +253,7 @@ export const ProductCard = ({ product, rank }: ProductCardProps) => {
 
               <Button variant="ghost" size="sm" asChild>
                 <a
-                  href={product.link}
+                  href={product.link || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

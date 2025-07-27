@@ -6,9 +6,9 @@ export interface Product {
   description: string | null;
   image: string | null;
   author: string | null;
-  points: number;
-  upvotes: number;
-  peerPushPoints: number;
+  points: number | null;
+  upvotes: number | null;
+  peerPushPoints: number | null;
   badges: string[] | null;
   category: string | null;
   link: string | null;
@@ -32,7 +32,7 @@ export interface Notification {
   userId: string | null;
   message: string;
   type: string;
-  read: boolean;
+  read: boolean | null;
   link: string | null;
   createdAt: Date;
 }

@@ -1,2 +1,2 @@
-import { getAllBadges } from "@/integrations/supabase/client";
+import { getAllBadges } from "@/integrations/drizzle/client";
 console.log(getAllBadges())

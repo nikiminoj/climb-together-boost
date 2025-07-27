@@ -24,13 +24,13 @@ const BadgeDisplay: React.FC<BadgeDisplayProps> = ({ userId }) => {
     <div className="badge-display-container">
       <h2>Earned Badges</h2>
       <div className="badges-list">
-        {badges.map((badge) => (
-          <div key={badge.id} className="badge-item" title={badge.description}>
+        {badges.map((userBadge) => (
+          <div key={userBadge.id} className="badge-item" title={userBadge.badges.description || ''}>
             {/* Assuming badge.icon is a URL or a class name */}
-            {badge.icon && (
-              <img src={badge.icon} alt={badge.name} className="badge-icon" />
+            {userBadge.badges.icon && (
+              <img src={userBadge.badges.icon} alt={userBadge.badges.name} className="badge-icon" />
             )}
-            <span className="badge-name">{badge.name}</span>
+            <span className="badge-name">{userBadge.badges.name}</span>
             {/* Optional: Implement a more sophisticated tooltip on hover */}
           </div>
         ))}

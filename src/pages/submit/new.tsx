@@ -1,16 +1,19 @@
-import { SubmitProductForm } from "@/components/SubmitProductForm"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import useCategories from "@/hooks/useCategories";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select";
-import { X, Link, Upload, Tag } from "lucide-react";
-import React, { useState } from "react"
-import { Button } from "react-day-picker";
-import { Label } from "recharts";
+import { Link, Upload, Tag } from "lucide-react";
+import React, { useState } from "react";
 
-const SubmitNew: React.FC = () => {
+interface SubmitNewProps {
+  onClose?: () => void;
+}
+
+const SubmitNew: React.FC<SubmitNewProps> = ({ onClose }) => {
     const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -45,7 +48,7 @@ const SubmitNew: React.FC = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label for="name">Product Name *</Label>
+              <Label htmlFor="name">Product Name *</Label>
               <Input
                 id="name"
                 placeholder="Enter your product name"
@@ -96,7 +99,7 @@ const SubmitNew: React.FC = () => {
                   {isLoadingCategories && <SelectItem value="loading" disabled>Loading categories...</SelectItem>}
                   {isErrorCategories && <SelectItem value="error" disabled>Error loading categories</SelectItem>}
                   {categories && categories.map((category) => (
-                    <SelectItem key={category.id} value={category.slug}>
+                    <SelectItem key={category.id} value={category.slug || category.id}>
                       {category.name}
                     </SelectItem>
                   ))}
@@ -162,7 +165,7 @@ const SubmitNew: React.FC = () => {
               >
                 Submit Product
               </Button>
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button type="button" variant="outline" onClick={onClose || (() => {})}>
                 Cancel
               </Button>
             </div>

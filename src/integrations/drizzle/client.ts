@@ -23,9 +23,9 @@ export async function getNotifications() {
       userId: item.user_id,
       message: item.message,
       type: item.type,
-      read: item.read,
+      read: item.read || false,
       link: item.link,
-      createdAt: new Date(item.created_at)
+      createdAt: item.created_at ? new Date(item.created_at) : new Date()
     }));
   } catch (error) {
     console.error('Error fetching notifications:', error);
@@ -111,13 +111,13 @@ export async function getUserBadges(userId: string) {
     // Map to match expected structure
     return (data || []).map(item => ({
       id: item.id,
-      earnedAt: new Date(item.earned_at),
-      badges: {
+      earnedAt: item.earned_at ? new Date(item.earned_at) : new Date(),
+      badges: item.badges ? {
         id: item.badges.id,
         name: item.badges.name,
         description: item.badges.description,
         icon: item.badges.icon,
-      },
+      } : { id: '', name: '', description: null, icon: null },
     }));
   } catch (error) {
     console.error(`Error fetching badges for user ${userId}:`, error);
@@ -143,7 +143,7 @@ export async function getCategories() {
       slug: item.slug,
       description: item.description,
       icon: item.icon,
-      createdAt: new Date(item.created_at)
+      createdAt: item.created_at ? new Date(item.created_at) : new Date()
     }));
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -213,15 +213,15 @@ export async function getProductsByCategory(categoryId: string, filters?: {
       description: item.description,
       image: item.image,
       author: item.author,
-      upvotes: item.upvotes,
-      points: item.points,
-      peerPushPoints: item.peer_push_points,
+      upvotes: item.upvotes || 0,
+      points: item.points || 0,
+      peerPushPoints: item.peer_push_points || 0,
       badges: item.badges,
       category: item.category,
       link: item.link,
       userId: item.user_id,
-      createdAt: new Date(item.created_at),
-      updatedAt: new Date(item.updated_at)
+      createdAt: item.created_at ? new Date(item.created_at) : new Date(),
+      updatedAt: item.updated_at ? new Date(item.updated_at) : new Date()
     }));
   } catch (error) {
     console.error('Error fetching products by category:', error);
@@ -245,7 +245,7 @@ export async function getUserProfile(userId: string) {
     return {
       id: data.id,
       username: data.username,
-      createdAt: new Date(data.created_at)
+      createdAt: data.created_at ? new Date(data.created_at) : new Date()
     };
   } catch (error) {
     console.error(`Error fetching user profile for ${userId}:`, error);
@@ -254,6 +254,9 @@ export async function getUserProfile(userId: string) {
 }
 
 export async function getUserRole(userId: string) {
+  // Since user_roles table doesn't exist yet in Supabase types, return default role
+  // TODO: Uncomment once user_roles table is added to Supabase
+  /*
   try {
     const { data, error } = await supabase
       .from('user_roles')
@@ -271,6 +274,32 @@ export async function getUserRole(userId: string) {
     console.error(`Error fetching user role for ${userId}:`, error);
     return 'user';
   }
+  */
+  return 'user';
+}
+
+export async function generateAvailableUsername(email: string) {
+  const baseUsername = email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+  let username = baseUsername;
+  let counter = 1;
+
+  // Check if username exists and increment if needed
+  while (true) {
+    const { data } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('username', username)
+      .single();
+
+    if (!data) {
+      break; // Username is available
+    }
+    
+    username = `${baseUsername}${counter}`;
+    counter++;
+  }
+
+  return username;
 }
 
 export async function upvoteProduct(productId: string) {
